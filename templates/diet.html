@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Nutritional Guidance - Recovery Assist</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <style>
+        body {
+            background: 
+                linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+                url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+                url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(6px);
+            z-index: -1;
+        }
+        
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 60px;
+        }
+        .breadcrumb {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
+        }
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .meal-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border-left: 4px solid var(--primary-color);
+        }
+        .meal-header {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+        .meal-type {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        .meal-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .meal-body {
+    font-family: 'Outfit', sans-serif;
+            padding: 1.5rem;
+        }
+        .food-list {
+            margin: 1rem 0;
+        }
+        .food-item {
+            padding: 0.8rem;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .food-name {
+            font-weight: 500;
+            color: #333;
+        }
+        .food-benefit {
+            font-size: 0.85rem;
+            color: var(--primary-color);
+        }
+        .nutrition-info {
+            background: var(--secondary-bg);
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .nutrition-info strong {
+            color: var(--primary-color);
+        }
+        .guidelines {
+            background: var(--success-color);
+            border-left: 4px solid var(--success-color);
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        .guidelines strong {
+            color: var(--dark-text);
+        }
+        .avoid-foods {
+            background: var(--error-color);
+            border-left: 4px solid var(--error-color);
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        .avoid-foods strong {
+            color: #4A148C;
+        }
+        .meal-plan-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+            border-left: 4px solid var(--primary-color);
+        }
+        .weekly-plan {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .day-card {
+            background: linear-gradient(135deg, var(--secondary-bg) 0%, var(--primary-light) 100%);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid var(--primary-color);
+        }
+        .day-name {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .meal-suggestion {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        .nutrient-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .nutrient-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-top: 4px solid var(--primary-color);
+        }
+        .nutrient-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .nutrient-name {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .nutrient-description {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+        .tips-section {
+            background: linear-gradient(135deg, var(--secondary-bg) 0%, var(--primary-light) 100%);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border-left: 4px solid var(--primary-color);
+        }
+        .tips-section h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        .tips-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .tips-section li {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+            position: relative;
+            color: #333;
+            line-height: 1.6;
+        }
+        .tips-section li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .hydration-tracker {
+            background: var(--primary-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .water-intake {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .water-glass {
+            padding: 0.5rem;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--primary-color);
+        }
+        .water-glass:hover,
+        .water-glass.filled {
+            background: var(--primary-color);
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .nutrition-grid {
+                grid-template-columns: 1fr;
+            }
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+            .weekly-plan {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span class="logo-icon">🏥</span>
+            <span><img src="{{ url_for('static', filename='logo.svg') }}" alt="Recovery Assist" class="nav-logo"> Recovery Assist</span>
+        </div>
+        <nav>
+            <a href="{{ url_for('patient_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}" style="background: var(--error-color);">Logout</a>
+        </nav>
+    </header>
+
+    <div class="content-wrapper">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="{{ url_for('patient_dashboard') }}">Dashboard</a>
+            <span>/</span>
+            <span>🍎 Nutritional Guidance</span>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>🍎 Personalized Nutritional Guidance</h1>
+            <p>Evidence-based dietary recommendations for optimal recovery and health</p>
+        </div>
+
+        <!-- Important Guidelines -->
+        <div class="guidelines">
+            <strong>📋 Clinical Nutrition Guidelines:</strong><br>
+            - Proper nutrition accelerates healing and recovery<br>
+            - Follow these dietary recommendations for best results<br>
+            - Consult a nutritionist for personalized meal planning<br>
+            - Stay adequately hydrated throughout the day<br>
+            - Report any dietary restrictions or allergies to your care team
+        </div>
+
+        <!-- Key Nutrients Section -->
+        <div>
+            <h2 style="color: var(--primary-color);">Essential Nutrients for Recovery</h2>
+            <div class="nutrient-grid">
+                <div class="nutrient-card">
+                    <div class="nutrient-icon">🥚</div>
+                    <div class="nutrient-name">Protein</div>
+                    <div class="nutrient-description">Supports tissue repair and muscle growth. Essential for post-operative healing.</div>
+                </div>
+                <div class="nutrient-card">
+                    <div class="nutrient-icon">🥗</div>
+                    <div class="nutrient-name">Vitamins</div>
+                    <div class="nutrient-description">Strengthen immune system and support wound healing processes.</div>
+                </div>
+                <div class="nutrient-card">
+                    <div class="nutrient-icon">🥛</div>
+                    <div class="nutrient-name">Minerals</div>
+                    <div class="nutrient-description">Calcium and iron are crucial for bone strength and energy levels.</div>
+                </div>
+                <div class="nutrient-card">
+                    <div class="nutrient-icon">🫒</div>
+                    <div class="nutrient-name">Healthy Fats</div>
+                    <div class="nutrient-description">Support nutrient absorption and reduce inflammation.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Meal Recommendations -->
+        <div class="nutrition-grid">
+            <!-- Breakfast -->
+            <div class="meal-card">
+                <div class="meal-header">
+                    <div class="meal-icon">🌅</div>
+                    <div class="meal-type">Breakfast (7-8 AM)</div>
+                </div>
+                <div class="meal-body">
+                    <div class="nutrition-info">
+                        <strong>Recommended Calories:</strong> 400-500
+                    </div>
+                    <div class="food-list">
+                        <div class="food-item">
+                            <span class="food-name">Oatmeal with Berries</span>
+                            <span class="food-benefit">Fiber & Antioxidants</span>
+                        </div>
+                        <div class="food-item">
+                            <span class="food-name">Greek Yogurt</span>
+                            <span class="food-benefit">Protein & Probiotics</span>
+                        </div>
+                        <div class="food-item">
+                            <span class="food-name">Whole Wheat Toast</span>
+                            <span class="food-benefit">Complex Carbs</span>
+                        </div>
+                        <div class="food-item">
+                            <span class="food-name">Eggs</span>
+                            <span class="food-benefit">Complete Protein</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lunch -->
+            <div class="meal-card">
+                <div class="meal-header">
+                    <div class="meal-icon">☀️</div>
+                    <div class="meal-type">Lunch (12-1 PM)</div>
+                </div>
+                <div class="meal-body">
+                    <div class="nutrition-info">
+                        <strong>Recommended Calories:</strong> 600-700
+                    </div>
+                    <div class="food-list">
+                        <div class="food-item">
+                            <span class="food-name">Grilled Chicken Breast</span>
+                            <span class="food-benefit">Lean Protein</span>
+                        </div>
+                        <div class="food-item">
+                            <span class="food-name">Brown Rice</span>
+                            <span class="food-benefit">Energy Release</span>
+                        </div>
+                        <div class="food-item">
+                            <span class="food-name">Mixed Vegetables</span>
+                            <span class="food-benefit">Vitamins & Minerals</span>
+                        </div>
+                        <div class="food-item">
+                            <span class="food-name">Olive Oil</span>
+                            <span class="food-benefit">Healthy Fats</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dinner -->
+            <div class="meal-card">
+                <div class="meal-header">
+                    <div class="meal-icon">🌙</div>
+                    <div class="meal-type">Dinner (7-8 PM)</div>
+                </div>
+                <div class="meal-body">
+                    <div class="nutrition-info">
+                        <strong>Recommended Calories:</strong> 400-500
+                    </div>
+                    <div class="food-list">
+                        <div class="food-item">
+                            <span class="food-name">Fish (Salmon/Cod)</span>
+                            <span class="food-benefit">Omega-3 Fatty Acids</span>
+                        </div>
+                        <div class="food-item">
+                            <span class="food-name">Sweet Potato</span>
+                            <span class="food-benefit">Beta-Carotene</span>
+                        </div>
+                        <div class="food-item">
+                            <span class="food-name">Steamed Broccoli</span>
+                            <span class="food-benefit">Calcium & Vitamin C</span>
+                        </div>
+                        <div class="food-item">
+                            <span class="food-name">Herbs & Spices</span>
+                            <span class="food-benefit">Anti-inflammatory</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Avoid Foods -->
+        <div class="avoid-foods">
+            <strong>🚫 Foods to Avoid During Recovery:</strong><br>
+            - High-sodium processed foods (may cause inflammation)<br>
+            - Excessive sugar and refined carbohydrates<br>
+            - Alcohol (interferes with medication and healing)<br>
+            - Caffeine in excess (affects sleep quality)<br>
+            - Deep-fried foods (difficult to digest)<br>
+            - Food allergens specific to your condition
+        </div>
+
+        <!-- Weekly Meal Plan -->
+        <div class="meal-plan-section">
+            <h2 style="margin-top: 0; color: var(--primary-color);">7-Day Sample Meal Plan</h2>
+            <div class="weekly-plan">
+                <div class="day-card">
+                    <div class="day-name">Monday</div>
+                    <div class="meal-suggestion">Oatmeal, Chicken Salad, Fish</div>
+                </div>
+                <div class="day-card">
+                    <div class="day-name">Tuesday</div>
+                    <div class="meal-suggestion">Yogurt Bowl, Turkey Sandwich, Pasta</div>
+                </div>
+                <div class="day-card">
+                    <div class="day-name">Wednesday</div>
+                    <div class="meal-suggestion">Eggs, Grilled Salmon, Rice</div>
+                </div>
+                <div class="day-card">
+                    <div class="day-name">Thursday</div>
+                    <div class="meal-suggestion">Smoothie, Chicken Rice Bowl, Vegetables</div>
+                </div>
+                <div class="day-card">
+                    <div class="day-name">Friday</div>
+                    <div class="meal-suggestion">Pancakes, Tuna Salad, Baked Fish</div>
+                </div>
+                <div class="day-card">
+                    <div class="day-name">Saturday</div>
+                    <div class="meal-suggestion">Toast & Jam, Beef Stew, Vegetable Medley</div>
+                </div>
+                <div class="day-card">
+                    <div class="day-name">Sunday</div>
+                    <div class="meal-suggestion">Omelet, Roasted Chicken, Brown Rice</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hydration Tracker -->
+        <div class="hydration-tracker">
+            <h2 style="color: var(--primary-color); margin-top: 0;">💧 Daily Hydration Goal: 8-10 Glasses</h2>
+            <p>Click glasses to track your daily water intake</p>
+            <div class="water-intake">
+                <div class="water-glass" onclick="this.classList.toggle('filled')" title="Glass 1">💧</div>
+                <div class="water-glass" onclick="this.classList.toggle('filled')" title="Glass 2">💧</div>
+                <div class="water-glass" onclick="this.classList.toggle('filled')" title="Glass 3">💧</div>
+                <div class="water-glass" onclick="this.classList.toggle('filled')" title="Glass 4">💧</div>
+                <div class="water-glass" onclick="this.classList.toggle('filled')" title="Glass 5">💧</div>
+                <div class="water-glass" onclick="this.classList.toggle('filled')" title="Glass 6">💧</div>
+                <div class="water-glass" onclick="this.classList.toggle('filled')" title="Glass 7">💧</div>
+                <div class="water-glass" onclick="this.classList.toggle('filled')" title="Glass 8">💧</div>
+                <div class="water-glass" onclick="this.classList.toggle('filled')" title="Glass 9">💧</div>
+                <div class="water-glass" onclick="this.classList.toggle('filled')" title="Glass 10">💧</div>
+            </div>
+        </div>
+
+        <!-- Nutrition Tips -->
+        <div class="tips-section">
+            <h2>💡 Practical Nutrition Tips for Recovery</h2>
+            <ul>
+                <li><strong>Eat Small, Frequent Meals:</strong> 5-6 smaller meals instead of 3 large ones aids digestion</li>
+                <li><strong>Meal Prep in Advance:</strong> Prepare healthy meals when energy permits for consistency</li>
+                <li><strong>Include Protein at Each Meal:</strong> Supports tissue repair and maintains muscle mass</li>
+                <li><strong>Eat a Rainbow:</strong> Different colored foods provide varied nutritional benefits</li>
+                <li><strong>Limit Salt Intake:</strong> Reduces inflammation and supports cardiovascular health</li>
+                <li><strong>Choose Whole Grains:</strong> Better sustained energy compared to refined carbohydrates</li>
+                <li><strong>Stay Hydrated:</strong> Proper hydration accelerates healing and supports all body functions</li>
+                <li><strong>Avoid Processed Foods:</strong> Prioritize whole, natural foods for better nutritional value</li>
+                <li><strong>Balance Macronutrients:</strong> Include adequate proteins, carbs, and healthy fats</li>
+                <li><strong>Listen to Your Body:</strong> Adjust portions and foods based on your recovery stage and appetite</li>
+            </ul>
+        </div>
+
+        <!-- Contact Nutritionist -->
+        <div style="margin-top: 2rem; text-align: center; padding: 2rem; background: white; border-radius: 10px; border: 1px solid #e0e0e0;">
+            <h3 style="color: var(--primary-color);">Need Personalized Nutritional Advice?</h3>
+            <p>Consult with a registered dietitian for a customized meal plan based on your specific medical needs.</p>
+            <button class="btn" onclick="alert('Request a consultation with our nutritionist.')">📞 Consult Nutritionist</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Nutrition Resources</h4>
+                <a href="#">Meal Ideas</a>
+                <a href="#">Food Guide</a>
+                <a href="#">FAQ</a>
+            </div>
+            <div class="footer-section">
+                <h4>Health Information</h4>
+                <a href="#">Nutrition Tips</a>
+                <a href="#">Disclaimer</a>
+                <a href="#">Privacy</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Recovery Assist - Nutrition is the foundation of recovery</p>
+        </div>
+    </footer>
+</body>
+</html>

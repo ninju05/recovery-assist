@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+    :root {
+      --primary-color: #26AE9F;
+      --primary-light: #B8E5DB;
+      --primary-dark: #538F86;
+      --secondary-bg: #B2D3CC;
+      --light-bg: #DDDEDC;
+      --main-bg: #ffffff;
+      --dark-text: #1A302D;
+      --muted-text: #538F86;
+      --success-color: #81C784;
+      --error-color: #E57373;
+    }
+
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Available Doctors | Recovery Assist</title>
+<style>
+body { font-family: 'Outfit', sans-serif; background: var(--main-bg); margin: 0; }
+header { background: var(--primary-color); color: white; padding: 15px 40px; font-size: 20px; display: flex; justify-content: space-between; align-items: center; }
+.back-btn { background: white; color: var(--primary-color); padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+.back-btn:hover { background: var(--primary-light); }
+.container { width: 90%; margin: 30px auto; }
+.page-title { color: var(--primary-color); font-size: 28px; margin-bottom: 8px; }
+.page-subtitle { color: #666; margin-bottom: 25px; }
+.filter-section { background: white; padding: 18px 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 25px; display: flex; gap: 12px; }
+.filter-btn { padding: 9px 18px; border: 2px solid var(--primary-color); background: white; color: var(--primary-color); border-radius: 5px; cursor: pointer; font-weight: bold; }
+.filter-btn.active { background: var(--primary-color); color: white; }
+.doctors-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+.doctor-card { background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); padding: 22px; border-left: 5px solid var(--primary-color); transition: transform 0.2s, box-shadow 0.2s; }
+.doctor-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+.doctor-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.doctor-avatar { width: 55px; height: 55px; background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+.doctor-name { color: var(--primary-color); font-size: 18px; font-weight: bold; margin: 0 0 6px 0; }
+.availability-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+.available { background: var(--success-color); color: var(--dark-text); }
+.unavailable { background: var(--error-color); color: #4A148C; }
+.doctor-info { margin: 12px 0; }
+.info-row { display: flex; margin: 8px 0; font-size: 14px; }
+.info-label { font-weight: bold; color: var(--primary-color); min-width: 120px; }
+.info-value { color: #333; flex: 1; }
+.qualification-badge { display: inline-block; background: var(--primary-light); color: var(--primary-color); padding: 4px 9px; border-radius: 5px; font-size: 12px; }
+.experience-text { color: #666; font-size: 13px; margin: 4px 0 8px 0; line-height: 1.5; }
+.contact-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid #eee; }
+.contact-btn { background: var(--primary-color); color: white; border: none; padding: 11px 15px; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; width: 100%; display: block; text-align: center; text-decoration: none; }
+.contact-btn:hover { background: var(--primary-dark); }
+.contact-btn.disabled { background: #ccc; cursor: not-allowed; pointer-events: none; }
+.no-doctors { text-align: center; padding: 50px; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.no-doctors p { color: #999; font-size: 16px; }
+</style>
+</head>
+<body>
+
+<header>
+<span>
+  <!-- Fallback emoji if logo.svg doesn't load -->
+  <img src="{{ url_for('static', filename='logo.svg') }}" alt="Recovery Assist" class="nav-logo" onerror="this.style.display='none'"> 
+  👥 Available Doctors - Recovery Assist
+</span>
+<a href="{% if case_id %}{{ url_for('patient_detail', case_id=case_id) }}{% else %}{{ url_for('patient_dashboard') }}{% endif %}"><button class="back-btn">← Back</button></a>
+</header>
+
+<div class="container">
+
+<h1 class="page-title">👨‍⚕️ Meet Our Doctors</h1>
+<p class="page-subtitle">Select an available doctor to assign them to your case or request a consultation.</p>
+
+<div class="filter-section">
+  <button class="filter-btn active" onclick="filterDoctors('all', event)">All Doctors</button>
+  <button class="filter-btn" onclick="filterDoctors('available', event)">Available Only</button>
+</div>
+
+{% if doctors %}
+<div class="doctors-grid">
+{% for doctor in doctors %}
+<div class="doctor-card" data-status="{% if doctor.is_available %}available{% else %}unavailable{% endif %}">
+
+  <div class="doctor-header">
+    <div>
+      <p class="doctor-name">{{ doctor.name }}</p>
+      <span class="availability-badge {% if doctor.is_available %}available{% else %}unavailable{% endif %}">
+        {% if doctor.is_available %}✓ Available{% else %}✗ Unavailable{% endif %}
+      </span>
+    </div>
+    <div class="doctor-avatar">👨‍⚕️</div>
+  </div>
+
+  <div class="doctor-info">
+    <div class="info-row">
+      <span class="info-label">Qualification:</span>
+      <span class="info-value"><span class="qualification-badge">{{ doctor.qualification }}</span></span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Experience:</span>
+    </div>
+    <div class="experience-text">{{ doctor.experience }}</div>
+    <div class="info-row">
+      <span class="info-label">Hospital:</span>
+      <span class="info-value">{{ doctor.hospital }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Contact:</span>
+      <span class="info-value">{{ doctor.phone }}</span>
+    </div>
+  </div>
+
+  <div class="contact-section">
+    {% if case_id %}
+      {% if doctor.is_available %}
+      <a href="{{ url_for('assign_doctor', case_id=case_id, doctor_id=doctor.id) }}" class="contact-btn">
+        👨‍⚕️ Assign Doctor
+      </a>
+      {% else %}
+      <span class="contact-btn disabled">Currently Unavailable</span>
+      {% endif %}
+    {% elif is_patient %}
+      {% if doctor.is_available %}
+      <a href="{{ url_for('request_consultation', doctor_id=doctor.id) }}" class="contact-btn">
+        🩺 Request Consultation
+      </a>
+      {% else %}
+      <span class="contact-btn disabled">Currently Unavailable</span>
+      {% endif %}
+    {% else %}
+      <span class="contact-btn disabled">No Case Selected</span>
+    {% endif %}
+  </div>
+
+</div>
+{% endfor %}
+</div>
+
+{% else %}
+<div class="no-doctors">
+  <p style="font-size:48px;">👨‍⚕️</p>
+  <p><b>No Doctors Available</b></p>
+  <p>Please check back later.</p>
+</div>
+{% endif %}
+
+</div>
+
+<script>
+function filterDoctors(filter, event) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.doctor-card').forEach(card => {
+    card.style.display = (filter === 'all' || card.getAttribute('data-status') === filter) ? 'block' : 'none';
+  });
+}
+</script>
+</body>
+</html>

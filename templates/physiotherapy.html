@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Physiotherapy Exercises - Recovery Assist</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <style>
+        body {
+            background: 
+                linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+                url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+                url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(6px);
+            z-index: -1;
+        }
+        
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 60px;
+        }
+        .breadcrumb {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
+        }
+        .physiotherapy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .exercise-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border-left: 4px solid var(--primary-color);
+        }
+        .exercise-header {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+        .exercise-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .exercise-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .exercise-body {
+    font-family: 'Outfit', sans-serif;
+            padding: 1.5rem;
+        }
+        .exercise-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+        .exercise-label {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        .exercise-value {
+            color: #666;
+        }
+        .difficulty-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+        .difficulty-easy {
+            background: var(--success-color);
+            color: var(--dark-text);
+        }
+        .difficulty-moderate {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .difficulty-advanced {
+            background: var(--error-color);
+            color: #4A148C;
+        }
+        .instructions-section {
+            background: var(--secondary-bg);
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        .instructions-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .instructions-list {
+            margin: 0;
+            padding-left: 1.5rem;
+            color: #333;
+            line-height: 1.7;
+        }
+        .instructions-list li {
+            margin-bottom: 0.5rem;
+        }
+        .precautions {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        .precautions strong {
+            color: #e65100;
+        }
+        .progress-tracker {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        .progress-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .progress-checkboxes {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .progress-day {
+            padding: 0.5rem 0.8rem;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .progress-day:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        .progress-day.completed {
+            background: var(--success-color);
+            color: white;
+        }
+        .tips-section {
+            background: linear-gradient(135deg, var(--secondary-bg) 0%, var(--primary-light) 100%);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border-left: 4px solid var(--primary-color);
+        }
+        .tips-section h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        .tips-section ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+        .tips-section li {
+            margin-bottom: 0.8rem;
+            color: #333;
+            line-height: 1.6;
+        }
+        .recovery-stages {
+            margin-top: 2rem;
+        }
+        .stage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        .stage-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-top: 4px solid var(--primary-color);
+        }
+        .stage-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .stage-name {
+            font-weight: 600;
+            color: #333;
+            margin-top: 0.5rem;
+        }
+        .stage-description {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        @media (max-width: 768px) {
+            .physiotherapy-grid {
+                grid-template-columns: 1fr;
+            }
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span class="logo-icon">🏥</span>
+            <span>Recovery Assist</span>
+        </div>
+        <nav>
+            <a href="{{ url_for('patient_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}" style="background: var(--error-color);">Logout</a>
+        </nav>
+    </header>
+
+    <div class="content-wrapper">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="{{ url_for('patient_dashboard') }}">Dashboard</a>
+            <span>/</span>
+            <span>🏋️ Physiotherapy Exercises</span>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>🏋️ Your Personalized Physiotherapy Program</h1>
+            <p>Evidence-based exercises designed for your specific condition and recovery stage</p>
+        </div>
+
+        <!-- Recovery Stages -->
+        <div class="recovery-stages">
+            <h2 style="color: var(--primary-color);">Recovery Stages</h2>
+            <div class="stage-grid">
+                <div class="stage-card">
+                    <div class="stage-number">Stage 1</div>
+                    <div class="stage-name">Acute Phase</div>
+                    <div class="stage-description">Rest and gentle movement (Days 1-7)</div>
+                </div>
+                <div class="stage-card">
+                    <div class="stage-number">Stage 2</div>
+                    <div class="stage-name">Early Mobilization</div>
+                    <div class="stage-description">Gradual activity increase (Weeks 2-4)</div>
+                </div>
+                <div class="stage-card">
+                    <div class="stage-number">Stage 3</div>
+                    <div class="stage-name">Active Rehabilitation</div>
+                    <div class="stage-description">Progressive strengthening (Weeks 4-12)</div>
+                </div>
+                <div class="stage-card">
+                    <div class="stage-number">Stage 4</div>
+                    <div class="stage-name">Functional Training</div>
+                    <div class="stage-description">Return to daily activities (Week 12+)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Important Safety Notice -->
+        <div class="precautions">
+            <strong>⚠️ Important Safety Guidelines:</strong><br>
+            - Stop any exercise that causes sharp pain<br>
+            - Never push through severe discomfort<br>
+            - Follow the prescribed duration and frequency<br>
+            - Contact your physiotherapist if pain increases<br>
+            - Recovery is gradual; patience is key to success
+        </div>
+
+        <!-- Exercises Grid -->
+        <div class="physiotherapy-grid">
+            {% if exercises %}
+                {% for exercise in exercises %}
+                <div class="exercise-card">
+                    <!-- Exercise Header -->
+                    <div class="exercise-header">
+                        <div class="exercise-number">Exercise {{ loop.index }}</div>
+                        <div class="exercise-name">{{ exercise.name }}</div>
+                    </div>
+
+                    <!-- Exercise Body -->
+                    <div class="exercise-body">
+                        <!-- Difficulty Level -->
+                        <div style="margin-bottom: 1rem;">
+                            <div class="exercise-label">Difficulty:</div>
+                            {% if 'Easy' in exercise.difficulty %}
+                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                            {% elif 'Moderate' in exercise.difficulty %}
+                            <span class="difficulty-badge difficulty-moderate">Moderate</span>
+                            {% else %}
+                            <span class="difficulty-badge difficulty-advanced">Advanced</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Exercise Details -->
+                        <div class="exercise-info-row">
+                            <span class="exercise-label">Repetitions:</span>
+                            <span class="exercise-value">{{ exercise.reps }}</span>
+                        </div>
+
+                        <div class="exercise-info-row">
+                            <span class="exercise-label">Sets:</span>
+                            <span class="exercise-value">{{ exercise.sets }}</span>
+                        </div>
+
+                        <div class="exercise-info-row">
+                            <span class="exercise-label">Duration:</span>
+                            <span class="exercise-value">{{ exercise.duration }}</span>
+                        </div>
+
+                        <div class="exercise-info-row">
+                            <span class="exercise-label">Frequency:</span>
+                            <span class="exercise-value">{{ exercise.frequency }}</span>
+                        </div>
+
+                        <!-- Instructions -->
+                        <div class="instructions-section">
+                            <div class="instructions-title">📋 Instructions:</div>
+                            <ol class="instructions-list">
+                                {% for step in exercise.instructions.split('|') %}
+                                <li>{{ step.strip() }}</li>
+                                {% endfor %}
+                            </ol>
+                        </div>
+
+                        <!-- Precautions -->
+                        {% if exercise.precautions %}
+                        <div class="precautions">
+                            <strong>⚠️ Cautions:</strong><br>
+                            {{ exercise.precautions }}
+                        </div>
+                        {% endif %}
+
+                        <!-- Progress Tracker -->
+                        <div class="progress-tracker">
+                            <div class="progress-label">✓ Completed This Week:</div>
+                            <div class="progress-checkboxes">
+                                <div class="progress-day" onclick="this.classList.toggle('completed')">Mon</div>
+                                <div class="progress-day" onclick="this.classList.toggle('completed')">Tue</div>
+                                <div class="progress-day" onclick="this.classList.toggle('completed')">Wed</div>
+                                <div class="progress-day" onclick="this.classList.toggle('completed')">Thu</div>
+                                <div class="progress-day" onclick="this.classList.toggle('completed')">Fri</div>
+                                <div class="progress-day" onclick="this.classList.toggle('completed')">Sat</div>
+                                <div class="progress-day" onclick="this.classList.toggle('completed')">Sun</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                <p style="color: #999; font-size: 1.1rem;">No exercises assigned yet.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Tips Section -->
+        <div class="tips-section">
+            <h2>💡 Physiotherapy Success Tips</h2>
+            <ul>
+                <li><strong>Consistency is Key:</strong> Perform exercises regularly as prescribed for optimal results</li>
+                <li><strong>Proper Form:</strong> Focus on correct technique over speed or number of repetitions</li>
+                <li><strong>Gradual Progression:</strong> Increase intensity only when recommended by your therapist</li>
+                <li><strong>Warm-up First:</strong> Always warm up muscles before starting physiotherapy exercises</li>
+                <li><strong>Cool Down:</strong> Gentle stretching after exercises aids recovery and prevents stiffness</li>
+                <li><strong>Pain Management:</strong> Ice or heat therapy may be recommended between sessions</li>
+                <li><strong>Stay Hydrated:</strong> Drink water throughout your exercise sessions</li>
+                <li><strong>Track Progress:</strong> Keep notes on your recovery to discuss with your physiotherapist</li>
+                <li><strong>Be Patient:</strong> Significant improvements typically take 4-6 weeks of consistent effort</li>
+                <li><strong>Communication:</strong> Report any concerns or new pain to your healthcare team immediately</li>
+            </ul>
+        </div>
+
+        <!-- Contact Physiotherapist -->
+        <div style="margin-top: 2rem; text-align: center; padding: 2rem; background: white; border-radius: 10px; border: 1px solid #e0e0e0;">
+            <h3 style="color: var(--primary-color);">Need Guidance with Your Exercises?</h3>
+            <p>Contact your physiotherapist if you have questions about proper form or need modifications.</p>
+            <button class="btn" onclick="alert('Message your physiotherapist for personalized guidance.')">📞 Contact Therapist</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Patient Resources</h4>
+                <a href="#">Exercise Guide</a>
+                <a href="#">Recovery Tips</a>
+                <a href="#">FAQ</a>
+            </div>
+            <div class="footer-section">
+                <h4>Medical Information</h4>
+                <a href="#">Rehabilitation</a>
+                <a href="#">Disclaimer</a>
+                <a href="#">Privacy</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Recovery Assist - Recovery achieved through dedicated physiotherapy and patient commitment</p>
+        </div>
+    </footer>
+</body>
+</html>

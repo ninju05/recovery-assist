@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+  <title>Doctor Dashboard - Recovery Assist</title>
+</head>
+<body class="doctor-dashboard-body">
+
+<header class="doctor-dashboard-header">
+  <div class="brand">
+    <img src="{{ url_for('static', filename='logo.svg') }}" alt="Recovery Assist" class="brand-logo">
+    Recovery Assist
+  </div>
+  <a href="{{ url_for('logout') }}" class="doctor-logout-btn">🚪 Logout</a>
+</header>
+
+<div class="doctor-container">
+
+  <div class="doctor-welcome-card">
+    <div>
+      <h1>Welcome, Dr. {{ session.get('doctor_name', 'Doctor') }} 👋</h1>
+      <p>Manage your assigned patients and monitor their recovery progress</p>
+    </div>
+  </div>
+
+  <div class="doctor-availability-card">
+    <div>
+      <h3>🟢 Availability Status</h3>
+      <p>Control when patients can contact you for consultations</p>
+    </div>
+    <div class="doctor-toggle-row">
+      <label class="doctor-toggle-switch">
+        <input type="checkbox" id="availabilityToggle" checked>
+        <span class="doctor-slider"></span>
+      </label>
+      <span class="doctor-status-badge doctor-status-available" id="statusBadge">✓ Available</span>
+    </div>
+  </div>
+
+  <h2 class="doctor-section-title">📋 Assigned Patients ({{ patients|length }})</h2>
+
+  {% if patients %}
+  <div class="doctor-patient-cards">
+    {% for patient in patients %}
+    <div class="doctor-patient-card" onclick="window.location.href='{{ url_for('patient_detail', case_id=patient.case_id) }}'">
+      <div class="doctor-patient-card-header">
+        <div class="doctor-patient-avatar">👤</div>
+        <div>
+          <h4>{{ patient.patient_name }}</h4>
+          <p>Case #{{ patient.case_id }}</p>
+        </div>
+      </div>
+      <div class="doctor-patient-card-body">
+        <div class="doctor-info-row">
+          <span class="doctor-info-label">Age:</span>
+          <span class="doctor-info-value">{{ patient.age }} years</span>
+        </div>
+        <div class="doctor-info-row">
+          <span class="doctor-info-label">Gender:</span>
+          <span class="doctor-info-value">{{ patient.gender }}</span>
+        </div>
+        <div class="doctor-diagnosis-box">
+          <strong>Diagnosis:</strong> {{ (patient.diagnosis or 'N/A')[:80] }}{% if patient.diagnosis and patient.diagnosis|length > 80 %}...{% endif %}
+        </div>
+      </div>
+      <div class="doctor-patient-card-footer">
+        <span class="doctor-upload-date">📅 {{ patient.upload_date }}</span>
+        <a href="{{ url_for('patient_detail', case_id=patient.case_id) }}" class="doctor-view-btn">View Details →</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="no-patients">
+    <div class="no-patients-icon">📭</div>
+    <h3>No Patients Assigned Yet</h3>
+    <p>Your patient list will appear here once patients assign you as their doctor.</p>
+  </div>
+  {% endif %}
+
+</div>
+
+<script>
+  document.getElementById('availabilityToggle').addEventListener('change', function () {
+    var badge = document.getElementById('statusBadge');
+    fetch('/toggle_availability', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+      .then(r => r.json())
+      .then(data => {
+        if (data.is_available === 1) {
+          badge.className = 'status-badge status-available';
+          badge.textContent = '✓ Available';
+        } else {
+          badge.className = 'status-badge status-unavailable';
+          badge.textContent = '✕ Unavailable';
+        }
+      });
+  });
+</script>
+
+</body>
+</html>

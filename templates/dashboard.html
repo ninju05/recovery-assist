@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+<title>Patient Dashboard - Recovery Assist</title>
+</head>
+<body class="dashboard-body">
+
+<div class="dashboard-app-layout">
+    
+    <!-- SIDEBAR -->
+    <aside class="dashboard-sidebar">
+        <div class="dashboard-sidebar-brand">
+            🏥 <img src="{{ url_for('static', filename='logo.svg') }}" alt="Recovery Assist" class="header-logo"> Recovery Assist
+        </div>
+        <div class="dashboard-sidebar-nav">
+            <a href="{{ url_for('patient_dashboard') }}" class="dashboard-tab-button active">
+                <span>🏠 Dashboard Overview</span>
+            </a>
+            <a href="{{ url_for('upload') }}" class="dashboard-tab-button">
+                <span>📤 Upload Report</span>
+            </a>
+            <a href="{{ url_for('doctors_list') }}" class="dashboard-tab-button">
+                <span>👨‍⚕️ Find a Doctor</span>
+            </a>
+            <a href="{{ url_for('logout') }}" class="dashboard-tab-button" style="margin-top: auto; color: #ffb3b3;">
+                <span>🚪 Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD -->
+    <main class="dashboard-main-wrapper">
+        
+        <!-- HEADER -->
+        <div class="dashboard-top-header">
+            <h1>Patient Profile Overview</h1>
+            <div class="dashboard-header-actions">
+                <a href="{{ url_for('upload') }}" class="dashboard-btn-primary">📤 New Upload</a>
+            </div>
+        </div>
+
+        <!-- TOP CARDS -->
+        <div class="dashboard-top-cards">
+            
+            <!-- PROFILE USER CARD -->
+            <div class="dashboard-card dashboard-profile-card">
+                <div class="dashboard-profile-avatar">👤</div>
+                <div class="dashboard-profile-details">
+                    <h2>{{ name }}</h2>
+                    <p>Patient Account</p>
+                    <div class="dashboard-pd-row">
+                        <div class="dashboard-pd-item">
+                            <div class="num">{{ cases|length }}</div>
+                            <div class="lbl">Medical Cases</div>
+                        </div>
+                        <div class="dashboard-pd-item">
+                            <div class="num">Active</div>
+                            <div class="lbl">Status</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUICK STATS CARD -->
+            <div class="dashboard-card dashboard-side-card">
+                <h3>Recovery Status</h3>
+                <div class="dashboard-status-badge">
+                    <span>📋</span> In Recovery Program
+                </div>
+                <div class="dashboard-status-badge" style="background:#e8f5e9; color:#2e7d32;">
+                    <span>⭐</span> Tracking Active
+                </div>
+                <p style="color:#888; font-size:12px; margin-top:15px;">Keep tracking your progress to ensure optimal recovery.</p>
+            </div>
+
+        </div>
+
+        <!-- BOTTOM SECTION -->
+        <h2 class="dashboard-section-title">
+            Your Medical Cases ({{ cases|length }})
+        </h2>
+
+        {% if cases %}
+        <div class="dashboard-cases-grid">
+            {% for case in cases %}
+            <div class="dashboard-case-card">
+                <div class="dashboard-case-card-header">
+                    Case #{{ case.case_id }}
+                    <span>{{ case.upload_date.split(' ')[0] if case.upload_date else '' }}</span>
+                </div>
+                <div class="dashboard-case-card-body">
+                    <div class="dashboard-case-info-row">
+                        <span class="dashboard-case-label">Diagnosis:</span>
+                        <span class="dashboard-case-value">{{ (case.diagnosis or 'N/A')[:30] }}{% if case.diagnosis and case.diagnosis|length > 30 %}...{% endif %}</span>
+                    </div>
+                    <div class="dashboard-case-info-row">
+                        <span class="dashboard-case-label">Surgery:</span>
+                        <span class="dashboard-case-value">{{ case.surgery if case.surgery else 'N/A' }}</span>
+                    </div>
+                    {% if case.doctor %}
+                    <div class="dashboard-case-info-row" style="margin-top:15px;">
+                        <span class="dashboard-case-label">Physician:</span>
+                        <span class="dashboard-doctor-badge">👨‍⚕️ {{ case.doctor }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="dashboard-case-footer">
+                    <a href="{{ url_for('view_case', case_id=case.case_id) }}">View Profile Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="dashboard-no-cases">
+            <div class="no-cases-icon">📭</div>
+            <h3 style="color: var(--primary-dark); margin-top: 0;">No Medical Cases Yet</h3>
+            <p>Start your recovery journey by uploading your hospital discharge summary.</p>
+            <a href="{{ url_for('upload') }}" class="dashboard-btn-primary" style="display:inline-block; padding:15px 30px;">📤 Upload Your First Summary</a>
+        </div>
+        {% endif %}
+
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

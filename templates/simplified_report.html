@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Simplified Report - Recovery Assist</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <style>
+        body { 
+            background: 
+                linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+                url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: 'Outfit', sans-serif; 
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+                url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(6px);
+            z-index: -1;
+        }
+        
+        header { background: var(--primary-color); color: white; padding: 15px 40px; font-size: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .back-btn { background: white; color: var(--primary-color); padding: 8px 14px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; text-decoration: none; }
+        .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+        .card { background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); padding: 25px; margin-bottom: 20px; border-left: 5px solid var(--primary-color); }
+        .card h2 { color: var(--primary-color); margin-top: 0; }
+        .section-title { color: var(--primary-color); font-weight: bold; margin: 15px 0 6px; }
+        ul { line-height: 1.9; padding-left: 20px; }
+        ul li { color: #333; }
+        .no-data { color: #999; font-style: italic; }
+        .info-row { display: flex; gap: 40px; flex-wrap: wrap; margin-bottom: 10px; }
+        .info-item { min-width: 150px; }
+        .info-label { font-weight: bold; color: var(--primary-color); font-size: 0.85rem; }
+        .info-value { color: #333; }
+    </style>
+</head>
+<body>
+<header>
+    <span>🏥 Simplified Report - Recovery Assist</span>
+    <a href="{{ url_for('patient_dashboard') }}" class="back-btn">← Back to Dashboard</a>
+</header>
+
+<div class="container">
+    <div class="card">
+        <h2>📋 Report Summary — Case #{{ case_id }}</h2>
+        <div class="info-row">
+            <div class="info-item">
+                <div class="info-label">Patient</div>
+                <div class="info-value">{{ patient.patient_name }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Age</div>
+                <div class="info-value">{{ patient.age }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Gender</div>
+                <div class="info-value">{{ patient.gender }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Hospital</div>
+                <div class="info-value">{{ patient.hospital or 'N/A' }}</div>
+            </div>
+        </div>
+        <div class="section-title">Diagnosis</div>
+        <p>{{ patient.diagnosis or 'Not detected' }}</p>
+        <div class="section-title">Surgery / Treatment</div>
+        <p>{{ patient.surgery or 'N/A' }}</p>
+        <div class="section-title">Simplified Explanation</div>
+        <p>{{ patient.simplified_report or 'No explanation available.' }}</p>
+        <div class="section-title">Follow-up Instructions</div>
+        <p>{{ patient.followup or 'No follow-up instructions.' }}</p>
+    </div>
+
+    <div class="card">
+        <h2>💊 Medications</h2>
+        {% if patient.medications %}
+        <ul>{% for m in patient.medications %}<li>{{ m }}</li>{% endfor %}</ul>
+        {% else %}<p class="no-data">No medications listed.</p>{% endif %}
+    </div>
+
+    <div class="card">
+        <h2>🏃 Physiotherapy</h2>
+        {% if patient.physiotherapy %}
+        <ul>{% for p in patient.physiotherapy %}<li>{{ p }}</li>{% endfor %}</ul>
+        {% else %}<p class="no-data">No physiotherapy plan listed.</p>{% endif %}
+    </div>
+
+    <div class="card">
+        <h2>🥗 Diet Recommendations</h2>
+        {% if patient.diet %}
+        <ul>{% for d in patient.diet %}<li>{{ d }}</li>{% endfor %}</ul>
+        {% else %}<p class="no-data">No diet recommendations listed.</p>{% endif %}
+    </div>
+
+    <div class="card">
+        <h2>📈 Recovery Progress</h2>
+        {% if patient.recovery_progress and patient.recovery_progress is mapping %}
+        <ul>
+            {% for cat in ['emergency', 'warning', 'activity', 'general'] %}
+                {% for r in patient.recovery_progress.get(cat, []) %}
+                <li>{{ r }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+        {% elif patient.recovery_progress %}
+        <ul>{% for r in patient.recovery_progress %}<li>{{ r }}</li>{% endfor %}</ul>
+        {% else %}<p class="no-data">No recovery timeline available.</p>{% endif %}
+    </div>
+
+    <div style="text-align:center; margin: 20px 0;">
+        <a href="{{ url_for('view_case', case_id=case_id) }}" class="back-btn" style="background:var(--primary-color);color:white;padding:12px 24px;border-radius: 12px;text-decoration:none;font-weight:bold;">
+            View Full Case Details →
+        </a>
+    </div>
+</div>
+</body>
+</html>

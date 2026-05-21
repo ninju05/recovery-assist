@@ -1,0 +1,173 @@
+{
+  "ankle_fracture": {
+    "patient_name": "IVANA SALTELLI",
+    "age": "36",
+    "gender": "Female",
+    "hospital": "City Orthopedic Hospital",
+    "doctor": "Dr. Arjun Nair",
+
+    "diagnosis": "Trimalleolar Ankle Fracture",
+    "surgery": "Open Reduction and Internal Fixation (ORIF)",
+
+    "simplified_report": "The patient suffered a severe ankle fracture affecting three bones of the ankle joint. Surgery was performed to fix the bones using metal plates and screws.",
+
+    "medications": [
+      "Paracetamol – Pain relief",
+      "Ibuprofen – Reduce inflammation",
+      "Amoxicillin – Prevent infection",
+      "Calcium supplements – Bone healing"
+    ],
+
+    "physiotherapy": [
+      "Week 1–2: Ankle elevation and gentle toe movements",
+      "Week 3–4: Passive ankle range-of-motion exercises",
+      "Week 5–6: Partial weight bearing with walker",
+      "Week 7+: Strengthening exercises and balance training"
+    ],
+
+    "diet": [
+      "Milk and dairy products for calcium",
+      "Eggs and lean chicken for protein",
+      "Green leafy vegetables",
+      "Vitamin D rich foods like fish",
+      "Nuts and seeds for bone strength"
+    ],
+
+    "recovery_progress": [
+      "Week 1: Pain control and swelling reduction",
+      "Week 2: Start light movement",
+      "Week 4: Begin physiotherapy",
+      "Week 6: Partial walking allowed",
+      "Week 10: Normal walking gradually resumes"
+    ],
+
+    "followup": "Follow-up visit after 2 weeks for wound check and X-ray evaluation."
+  },
+
+  "tibia_fracture": {
+    "patient_name": "Anil Varma",
+    "age": "38",
+    "gender": "Male",
+    "hospital": "Metro Bone Care Center",
+    "doctor": "Dr. Sneha Reddy",
+
+    "diagnosis": "Tibia Shaft Fracture",
+    "surgery": "Intramedullary Nailing",
+
+    "simplified_report": "The patient had a fracture in the main bone of the lower leg (tibia). Surgery was performed to stabilize the bone using a metal rod placed inside the bone.",
+
+    "medications": [
+      "Diclofenac – Pain relief",
+      "Cefixime – Antibiotic",
+      "Calcium tablets",
+      "Vitamin D supplements"
+    ],
+
+    "physiotherapy": [
+      "Week 1: Leg elevation and muscle activation",
+      "Week 2–3: Knee bending exercises",
+      "Week 4–5: Partial weight bearing",
+      "Week 6+: Walking training"
+    ],
+
+    "diet": [
+      "High protein diet",
+      "Calcium rich foods",
+      "Leafy vegetables",
+      "Whole grains"
+    ],
+
+    "recovery_progress": [
+      "Week 1: Pain reduction",
+      "Week 3: Knee mobility improves",
+      "Week 6: Walking with support",
+      "Week 12: Full recovery expected"
+    ],
+
+    "followup": "Follow-up appointment after 4 weeks for X-ray."
+  },
+
+  "hip_replacement": {
+    "patient_name": "Lakshmi Menon",
+    "age": "67",
+    "gender": "Female",
+    "hospital": "Sunrise Orthopedic Hospital",
+    "doctor": "Dr. Rajesh Pillai",
+
+    "diagnosis": "Hip Joint Replacement",
+    "surgery": "Total Hip Replacement",
+
+    "simplified_report": "The damaged hip joint was replaced with an artificial joint to relieve pain and improve movement.",
+
+    "medications": [
+      "Paracetamol",
+      "Blood thinner medication",
+      "Calcium supplements",
+      "Vitamin D"
+    ],
+
+    "physiotherapy": [
+      "Day 1–3: Assisted walking",
+      "Week 2: Hip strengthening exercises",
+      "Week 4: Walking independently",
+      "Week 6: Normal mobility training"
+    ],
+
+    "diet": [
+      "Protein rich food",
+      "Calcium supplements",
+      "Fruits and vegetables",
+      "Hydration"
+    ],
+
+    "recovery_progress": [
+      "Week 1: Begin walking with support",
+      "Week 3: Improved hip movement",
+      "Week 6: Independent walking",
+      "Month 3: Full recovery"
+    ],
+
+    "followup": "Follow-up after 6 weeks for joint evaluation."
+  },
+
+  "knee_osteoarthritis": {
+    "patient_name": "Ramesh Nair",
+    "age": "60",
+    "gender": "Male",
+    "hospital": "Kerala Joint Care Clinic",
+    "doctor": "Dr. Meera Krishnan",
+
+    "diagnosis": "Knee Osteoarthritis",
+    "surgery": "Conservative treatment with physiotherapy",
+
+    "simplified_report": "The patient has degeneration of knee cartilage causing pain and stiffness.",
+
+    "medications": [
+      "Pain relievers",
+      "Anti-inflammatory drugs",
+      "Glucosamine supplements"
+    ],
+
+    "physiotherapy": [
+      "Quadriceps strengthening",
+      "Knee range-of-motion exercises",
+      "Low impact walking",
+      "Cycling exercises"
+    ],
+
+    "diet": [
+      "Anti-inflammatory foods",
+      "Fish rich in Omega-3",
+      "Green vegetables",
+      "Weight management diet"
+    ],
+
+    "recovery_progress": [
+      "Week 2: Pain reduction",
+      "Week 4: Improved mobility",
+      "Week 8: Strength improved"
+    ],
+
+    "followup": "Follow-up after 1 month."
+  }
+}

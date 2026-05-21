@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recovery Assist - Digital Health Tool</title>
+    <!-- Add Google Fonts Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <style>
+        /* Enhanced Home Page Styles */
+        body {
+            background: 
+                linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+                url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+                url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(6px);
+            z-index: -1;
+        }
+
+        /* Enhanced Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(38, 174, 159, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        header:hover {
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        nav a {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Enhanced Hero Section */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(9, 38, 33, 0.55) 0%, rgba(9, 38, 33, 0.35) 100%);
+            z-index: -1;
+        }
+
+        .hero-left {
+            flex: 1;
+            padding-right: 3rem;
+            animation: fadeInLeft 1s ease-out;
+            color: #ffffff;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.45);
+        }
+
+        .hero-left h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            color: #f5fdfb;
+            letter-spacing: 0.5px;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-left p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.92);
+            margin-bottom: 2rem;
+            line-height: 1.65;
+            max-width: 580px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-stat-label {
+            font-size: 0.9rem;
+            color: var(--muted-text);
+            font-weight: 500;
+        }
+
+        .home-hero-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(38, 174, 159, 0.3);
+        }
+
+        .home-hero-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(38, 174, 159, 0.4);
+        }
+
+        .hero-right {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeInRight 1s ease-out 0.3s both;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Enhanced Stats Section */
+        .stats-section {
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(38, 174, 159, 0.1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card-dark {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .stat-card-light {
+            background: var(--light-bg);
+        }
+
+        .home-stat-card-h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Enhanced Features Section */
+        .features-section {
+            padding: 5rem 2rem;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .features-header h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--dark-text);
+        }
+
+        .features-header p {
+            font-size: 1.2rem;
+            text-align: center;
+            color: var(--muted-text);
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(38, 174, 159, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .feature-icon-wrapper {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--dark-text);
+        }
+
+        .feature-card p {
+            color: var(--muted-text);
+            line-height: 1.6;
+        }
+
+        /* Enhanced Why Us Section */
+        .home-why-us-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, rgba(38, 174, 159, 0.05) 0%, rgba(26, 48, 45, 0.05) 100%);
+        }
+
+        .home-section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--dark-text);
+        }
+
+        .home-why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .home-why-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(38, 174, 159, 0.1);
+        }
+
+        .home-why-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-why-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Testimonials Section */
+        .testimonials-section {
+            padding: 5rem 2rem;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(38, 174, 159, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .testimonial-content p {
+            font-style: italic;
+            color: var(--muted-text);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .author-info h4 {
+            margin: 0;
+            color: var(--dark-text);
+            font-size: 1rem;
+        }
+
+        .author-info span {
+            color: var(--muted-text);
+            font-size: 0.9rem;
+        }
+
+        /* Newsletter Section */
+        .newsletter-section {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .newsletter-content h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .newsletter-content p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            background: white;
+            color: var(--dark-text);
+        }
+
+        .newsletter-form button {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-form button:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .newsletter-disclaimer {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Enhanced CTA Section */
+        .home-cta-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .home-cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .home-cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        .home-cta-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .home-btn-white {
+            background: white !important;
+            color: var(--primary-color) !important;
+        }
+
+        .home-btn-white:hover {
+            background: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        .home-cta-outline-btn {
+            border: 2px solid white;
+            color: white;
+        }
+
+        .home-cta-outline-btn:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        /* Enhanced Footer */
+        footer {
+            background: var(--dark-text);
+            color: white;
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-color);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Animations */
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 2rem 1rem;
+            }
+
+            .hero-left {
+                padding-right: 0;
+                margin-bottom: 3rem;
+            }
+
+            .hero-left h1 {
+                font-size: 2rem;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .hero-stat {
+                flex: 1;
+                min-width: 80px;
+            }
+
+            .glass-card {
+                max-width: 100%;
+                padding: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .home-cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .home-cta-buttons a {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .newsletter-form input {
+                width: 100%;
+                max-width: 350px;
+            }
+
+            .newsletter-form button {
+                width: 100%;
+                max-width: 350px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            nav {
+                display: none; /* Hide navigation on mobile, could add hamburger menu later */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-left h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .feature-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .testimonial-card {
+                padding: 1.5rem;
+            }
+
+            .newsletter-section {
+                padding: 3rem 1rem;
+            }
+
+            .newsletter-content h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- A. Navbar -->
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='logo.svg') }}" alt="Recovery Assist Logo" class="logo-icon">
+            <span>Recovery Assist</span>
+        </div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#why-recovery">Why Us</a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline">Patient Login</a>
+            <a href="{{ url_for('doctor_login') }}" class="btn">Doctor Portal</a>
+        </nav>
+    </header>
+
+    <!-- B. Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-left">
+            <h1>Advanced Patient Recovery & Smart Health Management</h1>
+            <p>Next-generation healthcare platform featuring interactive medication tracking, detailed recovery education,
+                categorized nutrition guidance, and AI-powered clinical insights for optimal post-operative recovery and
+                continuous health monitoring.</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-number">10K+</span>
+                    <span class="hero-stat-label">Active Patients</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">500+</span>
+                    <span class="hero-stat-label">Healthcare Providers</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">98%</span>
+                    <span class="hero-stat-label">Satisfaction Rate</span>
+                </div>
+            </div>
+            <a href="{{ url_for('login') }}" class="btn home-hero-btn">Start Your Recovery Journey</a>
+        </div>
+        <div class="hero-right">
+            <!-- Hero image is set by CSS background for reliable display -->
+            <div class="glass-card">
+                <h3 class="home-glass-card h3">For Healthcare Professionals</h3>
+                <p class="home-glass-card p">Monitor patient progress with advanced analytics, manage recovery plans,
+                    and provide comprehensive care coordination.</p>
+                <div class="home-glass-card-center">
+                    <a href="{{ url_for('doctor_login') }}" class="btn btn-outline">Access Doctor Portal</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- C. Stats/Metrics Section (Using Trust Badges content) -->
+    <section class="stats-section">
+        <div class="stat-card stat-card-dark">
+            <div class="stat-icon">🔒</div>
+            <h2 class="home-stat-card-h2">HIPAA Secure</h2>
+            <p>Enterprise-grade encryption with HIPAA compliance and advanced data protection</p>
+        </div>
+        <div class="stat-card stat-card-light">
+            <div class="stat-icon">📱</div>
+            <h2 class="home-stat-card-h2">Smart Tracking</h2>
+            <p>Interactive medication timers, completion tracking, and automated health monitoring</p>
+        </div>
+        <div class="stat-card stat-card-white">
+            <div class="stat-icon">⚡</div>
+            <h2 class="home-stat-card-h2">24/7 Access</h2>
+            <p>Real-time health dashboard access with mobile-responsive design and instant updates</p>
+        </div>
+    </section>
+
+    <!-- D. Core Features Grid -->
+    <section class="features-section" id="features">
+        <div class="features-header">
+            <h2>Comprehensive Healthcare Features</h2>
+            <p>Understand your diagnosis, treatment outcomes, and clinical recommendations with ease.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">📋</div>
+                <h3>Medical Report Simplification</h3>
+                <p>Our AI technology transforms complex medical discharge summaries and clinical reports into clear,
+                    patient-friendly explanations with detailed condition breakdowns.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">🔍</div>
+                <h3>Intelligent PDF Extraction</h3>
+                <p>Automatically extracts and organizes critical patient information from discharge documents with
+                    advanced categorization and clinical insights.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">💊</div>
+                <h3>Smart Medication Tracking</h3>
+                <p>Interactive medication schedule with completion tracking, automatic timers, and daily reset
+                    functionality to ensure perfect medication adherence.</p>
+            </div>
+
+
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">📊</div>
+                <h3>Advanced Recovery Dashboard</h3>
+                <p>Comprehensive dashboard with recovery status, medication timers, progress analytics, and
+                    real-time health monitoring with visual progress charts.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">📈</div>
+                <h3>Condition-Based Recovery Plans</h3>
+                <p>Dynamic recovery timelines and progress plans that adapt based on your specific medical condition,
+                    ensuring optimal healing pathways.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">🔔</div>
+                <h3>Smart Follow-up Management</h3>
+                <p>Automated appointment reminders, medication alerts, and intelligent follow-up scheduling with
+                    doctor-patient communication integration.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">🥗</div>
+                <h3>Categorized Nutrition Guidance</h3>
+                <p>Meal-based dietary recommendations with categorized food charts, nutritional analysis, and
+                    condition-specific eating plans for optimal recovery.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">💡</div>
+                <h3>Detailed Recovery Education</h3>
+                <p>Comprehensive recovery tips with detailed explanations, categorized by emergency signs, warning
+                    symptoms, activity restrictions, and general guidance.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">💬</div>
+                <h3>HIPAA-Compliant Communication</h3>
+                <p>Secure messaging platform for direct doctor-patient communication with real-time updates,
+                    file sharing, and encrypted medical discussions.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">🎯</div>
+                <h3>Personalized Health Insights</h3>
+                <p>AI-powered health analytics providing personalized recommendations, progress predictions, and
+                    proactive health management strategies.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHY CHOOSE RECOVERY ASSIST -->
+    <section class="home-why-us-section home-why-us-bg" id="why-recovery">
+        <h2 class="home-section-title">Why Healthcare Professionals Choose Recovery Assist</h2>
+
+        <div class="home-why-grid">
+            <div class="home-why-card">
+                <h3>Enhanced Patient Education</h3>
+                <p>Detailed recovery tips with comprehensive explanations, categorized by emergency signs, warning
+                    symptoms, and activity restrictions for better patient understanding.</p>
+            </div>
+            <div class="home-why-card">
+                <h3>Medication Adherence Tracking</h3>
+                <p>Interactive medication completion system with visual timers, daily reset functionality, and
+                    automated tracking to ensure perfect medication compliance.</p>
+            </div>
+            <div class="home-why-card">
+                <h3>Condition-Specific Recovery Plans</h3>
+                <p>Dynamic recovery timelines and personalized plans that adapt based on specific medical conditions,
+                    ensuring optimal healing pathways for each patient.</p>
+            </div>
+            <div class="home-why-card">
+                <h3>Categorized Nutrition Guidance</h3>
+                <p>Meal-based dietary recommendations with organized food categories, nutritional analysis, and
+                    condition-specific eating plans for comprehensive wellness support.</p>
+            </div>
+            <div class="home-why-card">
+                <h3>Advanced Progress Analytics</h3>
+                <p>Real-time recovery monitoring with visual progress charts, health metrics tracking, and
+                    predictive analytics for proactive healthcare management.</p>
+            </div>
+            <div class="home-why-card">
+                <h3>Seamless Doctor-Patient Communication</h3>
+                <p>HIPAA-compliant messaging with file sharing, real-time updates, and integrated communication
+                    tools for comprehensive care coordination.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section class="testimonials-section">
+        <h2 class="home-section-title">What Our Patients Say</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    <p>"Recovery Assist transformed my post-surgery experience. The medication tracking kept me on schedule, and the detailed recovery tips helped me understand exactly what to expect."</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">👩‍⚕️</div>
+                    <div class="author-info">
+                        <h4>Sarah Johnson</h4>
+                        <span>Orthopedic Surgery Patient</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    <p>"The nutrition guidance was incredibly helpful. Having categorized meal plans made it easy to follow my dietary restrictions while ensuring proper healing."</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">👨‍💼</div>
+                    <div class="author-info">
+                        <h4>Michael Chen</h4>
+                        <span>Cardiac Surgery Patient</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    <p>"As a healthcare provider, Recovery Assist has streamlined my patient monitoring. The analytics help me provide better care and catch issues early."</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">👨‍⚕️</div>
+                    <div class="author-info">
+                        <h4>Dr. Emily Rodriguez</h4>
+                        <span>Cardiologist</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION -->
+    <div class="home-cta-section">
+        <h2>Experience Advanced Recovery Management Today</h2>
+        <p>Join thousands of patients benefiting from interactive medication tracking, detailed recovery education,
+            and personalized health insights with Recovery Assist's comprehensive platform.</p>
+        <div class="home-cta-buttons">
+            <a href="{{ url_for('register') }}" class="btn home-btn-white home-cta-btn">Start Your Recovery</a>
+            <a href="{{ url_for('doctor_login') }}" class="btn btn-outline home-cta-outline-btn">Healthcare Provider Access</a>
+        </div>
+    </div>
+
+    <!-- NEWSLETTER SECTION -->
+    <section class="newsletter-section">
+        <div class="newsletter-content">
+            <h2>Stay Updated on Your Health Journey</h2>
+            <p>Get the latest health tips, recovery insights, and platform updates delivered to your inbox.</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Enter your email address" required>
+                <button type="submit" class="btn">Subscribe Now</button>
+            </form>
+            <p class="newsletter-disclaimer">We respect your privacy. Unsubscribe at any time.</p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Recovery Assist</h4>
+                <a href="#home">Home</a>
+                <a href="#features">Features</a>
+                <a href="#why-recovery">About</a>
+                <a href="/about">Contact</a>
+            </div>
+            <div class="footer-section">
+                <h4>Patient Services</h4>
+                <a href="{{ url_for('login') }}">Patient Portal</a>
+                <a href="{{ url_for('register') }}">Register</a>
+                <a href="/faq">FAQ</a>
+                <a href="/support">Support</a>
+            </div>
+            <div class="footer-section">
+                <h4>Healthcare Providers</h4>
+                <a href="{{ url_for('doctor_login') }}">Doctor Dashboard</a>
+                <a href="{{ url_for('doctor_register') }}">Healthcare Registration</a>
+                <a href="/clinician-resources">Resources</a>
+            </div>
+            <div class="footer-section">
+                <h4>Legal & Privacy</h4>
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+                <a href="/compliance">HIPAA Compliance</a>
+                <a href="/security">Data Security</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Recovery Assist. All Rights Reserved. | Advancing Patient Recovery Through Intelligent
+                Technology.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Newsletter form handling
+        const newsletterForm = document.querySelector('.newsletter-form');
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = this.querySelector('input[type="email"]').value;
+                
+                // Basic email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    alert('Please enter a valid email address.');
+                    return;
+                }
+                
+                // Show success message (in a real app, this would send to server)
+                alert('Thank you for subscribing! We\'ll keep you updated on your health journey.');
+                this.reset();
+            });
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.feature-card, .home-why-card, .testimonial-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Counter animation for hero stats
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target + (element.textContent.includes('%') ? '%' : '+');
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current) + (element.textContent.includes('%') ? '%' : '+');
+                }
+            }, 20);
+        }
+
+        // Trigger counter animations when hero is visible
+        const heroObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    document.querySelectorAll('.hero-stat-number').forEach(stat => {
+                        const target = parseInt(stat.textContent.replace(/[^\d]/g, ''));
+                        animateCounter(stat, target);
+                    });
+                    heroObserver.unobserve(entry.target);
+                }
+            });
+        });
+
+        const heroSection = document.querySelector('.hero');
+        if (heroSection) {
+            heroObserver.observe(heroSection);
+        }
+
+        // Add loading animation for buttons
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function() {
+                if (this.href && !this.href.includes('#')) {
+                    this.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">⟳</span> Loading...';
+                    this.style.pointerEvents = 'none';
+                }
+            });
+        });
+
+        // Add CSS animation for loading spinner
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+
+</html>

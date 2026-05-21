@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Healthcare Professional Portal - Recovery Assist</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <style>
+        body {
+            background: 
+                linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+                url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(0px);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+                url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(6px);
+            z-index: -1;
+        }
+        .doctor-login-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(38, 174, 159, 0.3);
+            max-width: 500px;
+            width: 90%;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .login-header h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .login-header p {
+            color: #666;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+        .professional-badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        form {
+            max-width: 100%;
+            padding: 0;
+            box-shadow: none;
+            background: transparent;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.85rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        } border-radius: 20px; border-radius: 20px; border-radius: 20px;
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(38, 174, 159, 0.1);
+        }
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .remember-forgot a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .remember-forgot a:hover {
+            text-decoration: underline;
+        }
+        button[type="submit"] {
+            width: 100%;
+            padding: 0.95rem;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+         border-radius: 50px; font-family: \'Outfit\', sans-serif; border-radius: 50px; font-family: \'Outfit\', sans-serif; border-radius: 50px; font-family: \'Outfit\', sans-serif;}
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(38, 174, 159, 0.3);
+        }
+        .signup-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+        }
+        .signup-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .signup-link a:hover {
+            color: var(--primary-dark);
+        }
+        .divider {
+            text-align: center;
+            margin: 2rem 0;
+            color: #999;
+        }
+        .patient-login {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        .patient-login p {
+            margin-bottom: 1rem;
+            color: #666;
+        }
+        .patient-login a {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .patient-login a:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="doctor-login-container">
+        <!-- Login Header -->
+        <div class="login-header">
+            <h1><img src="{{ url_for('static', filename='logo.svg') }}" alt="Recovery Assist" class="login-logo"> Recovery Assist</h1>
+            <p>Healthcare Professional Portal</p>
+            <span class="professional-badge">Secure Medical Access</span>
+        </div>
+
+        <!-- Login Form -->
+        <form method="POST">
+            <div class="form-group">
+                <label for="doctor_id">Professional ID</label>
+                <input 
+                    type="text" 
+                    id="doctor_id"
+                    name="doctor_id" 
+                    placeholder="Enter your professional ID" 
+                    required
+                    autocomplete="username"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password"
+                    name="password" 
+                    placeholder="Enter your password" 
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <div class="remember-forgot">
+                <label style="margin: 0; font-weight: 400;">
+                    <input type="checkbox" name="remember" style="margin-right: 0.5rem;">
+                    Remember me
+                </label>
+                <a href="/forgot-password">Forgot password?</a>
+            </div>
+
+            <button type="submit">Access Portal</button>
+        </form>
+
+        <!-- Sign Up Link -->
+        <div class="signup-link">
+            New healthcare provider? 
+            <a href="{{ url_for('doctor_register') }}">Create Account</a>
+        </div>
+
+        <!-- Patient Portal Link -->
+        <div class="patient-login">
+            <p style="font-size: 0.9rem;">Patient Portal</p>
+            <a href="{{ url_for('login') }}">Patient Login</a>
+        </div>
+    </div>
+</body>
+</html>
