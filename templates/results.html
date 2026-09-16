@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Recovery Dashboard | Recovery Assist</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+
+<style>
+
+body{
+    font-family: 'Outfit', sans-serif;
+    background: 
+        linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+        url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+        url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    filter: blur(6px);
+    z-index: -1;
+}
+
+header{
+    background:var(--primary-color);
+    color:white;
+    padding:15px 40px;
+    font-size:20px;
+}
+
+.dashboard{
+    width:90%;
+    margin:auto;
+    margin-top:30px;
+}
+
+.tabs{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.tab-button{
+    padding:10px 18px;
+    border:none;
+    background:var(--primary-light);
+    cursor:pointer;
+    border-radius: 12px;
+}
+
+.tab-button.active{
+    background:var(--primary-color);
+    color:white;
+}
+
+.tab-content{
+    background:white;
+    margin-top:20px;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+ul{
+    line-height:1.8;
+}
+
+.chat-box{
+    border:1px solid #ddd;
+    padding:20px;
+    border-radius:8px;
+}
+
+.chat-input{
+    margin-top:15px;
+}
+
+.chat-input input{
+    padding:10px;
+    width:70%;
+}
+
+.chat-input button{
+    padding:10px 15px;
+    background:var(--primary-color);
+    border:none;
+    color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<img src="{{ url_for('static', filename='logo.svg') }}" alt="Recovery Assist" class="results-logo"> Recovery Assist Dashboard
+</header>
+
+<div class="dashboard">
+
+<div class="tabs">
+
+<button class="tab-button active" onclick="showTab('patient')">Patient Information</button>
+
+<button class="tab-button" onclick="showTab('report')">Simplified Report</button>
+
+<button class="tab-button" onclick="showTab('medication')">Medication Schedule</button>
+
+<button class="tab-button" onclick="showTab('physio')">Physiotherapy Guide</button>
+
+<button class="tab-button" onclick="showTab('diet')">Diet Chart</button>
+
+<button class="tab-button" onclick="showTab('recovery')">Recovery Progress</button>
+
+<button class="tab-button" onclick="showTab('followup')">Follow-up Reminder</button>
+
+<button class="tab-button" onclick="showTab('chat')">Chat With Doctor</button>
+
+</div>
+
+<!-- Patient Information -->
+
+<div id="patient" class="tab-content">
+
+<h2>Patient Information</h2>
+
+<p><b>Name:</b> {{ data.patient_name }}</p>
+
+<p><b>Age:</b> {{ data.age }}</p>
+
+<p><b>Gender:</b> {{ data.gender }}</p>
+
+<p><b>Diagnosis:</b> {{ data.diagnosis }}</p>
+
+<p><b>Surgery:</b> {{ data.surgery }}</p>
+
+<p><b>Hospital:</b> {{ data.hospital }}</p>
+
+<p><b>Doctor:</b> {{ data.doctor }}</p>
+
+</div>
+
+<!-- Simplified Report -->
+
+<div id="report" class="tab-content" style="display:none">
+
+<h3>Diagnosis</h3>
+
+<p>{{ data.diagnosis }}</p>
+
+<h3>Simplified Explanation</h3>
+
+<p>{{ data.simplified_report }}</p>
+
+</div>
+
+<!-- Medication -->
+
+<div id="medication" class="tab-content" style="display:none">
+
+<h3>Medication Schedule</h3>
+
+<ul>
+
+{% for med in data.medications %}
+<li>{{ med }}</li>
+{% endfor %}
+
+</ul>
+
+</div>
+
+<!-- Physiotherapy -->
+
+<div id="physio" class="tab-content" style="display:none">
+
+<h3>Physiotherapy Exercises</h3>
+
+<ul>
+
+{% for p in data.physiotherapy %}
+<li>{{ p }}</li>
+{% endfor %}
+
+</ul>
+
+</div>
+
+<!-- Diet -->
+
+<div id="diet" class="tab-content" style="display:none">
+
+<h3>Recommended Diet</h3>
+
+<ul>
+
+{% for d in data.diet %}
+<li>{{ d }}</li>
+{% endfor %}
+
+</ul>
+
+</div>
+
+<!-- Recovery -->
+
+<div id="recovery" class="tab-content" style="display:none">
+
+<h3>Recovery Progress</h3>
+
+<ul>
+
+{% for r in data.recovery_progress %}
+<li>{{ r }}</li>
+{% endfor %}
+
+</ul>
+
+</div>
+
+<!-- Follow-up -->
+
+<div id="followup" class="tab-content" style="display:none">
+
+<h3>Doctor Follow-up</h3>
+
+<p>{{ data.followup }}</p>
+
+</div>
+
+<!-- Chat -->
+
+<div id="chat" class="tab-content" style="display:none">
+
+<h3>Connect With a Doctor</h3>
+
+<p style="margin-bottom: 20px; color: #666;">Browse our list of available doctors and connect with a healthcare professional who can help with your recovery.</p>
+
+<a href="{{ url_for('patient_doctors_list', case_id=case_id) }}" style="text-decoration: none;">
+<button style="background:var(--primary-color); color:white; padding:12px 30px; border:none; border-radius:5px; cursor:pointer; font-size:16px; font-weight:bold;">
+👨‍⚕️ View Available Doctors
+</button>
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+function showTab(tabName){
+
+var contents=document.getElementsByClassName("tab-content");
+
+for(var i=0;i<contents.length;i++){
+contents[i].style.display="none";
+}
+
+var buttons=document.getElementsByClassName("tab-button");
+
+for(var i=0;i<buttons.length;i++){
+buttons[i].classList.remove("active");
+}
+
+document.getElementById(tabName).style.display="block";
+
+event.currentTarget.classList.add("active");
+
+}
+
+</script>
+
+</body>
+</html>

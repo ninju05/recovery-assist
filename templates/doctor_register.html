@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Healthcare Professional Registration - Recovery Assist</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <style>
+        body {
+            background: 
+                linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+                url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(0px);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem 0;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+                url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(6px);
+            z-index: -1;
+        }
+        .doctor-register-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(38, 174, 159, 0.3);
+            max-width: 600px;
+            width: 90%;
+        }
+        .register-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .register-header h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .register-header p {
+            color: #666;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+        form {
+            max-width: 100%;
+            padding: 0;
+            box-shadow: none;
+            background: transparent;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.85rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        } border-radius: 20px; border-radius: 20px; border-radius: 20px;
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(38, 174, 159, 0.1);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .form-row .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        button[type="submit"] {
+            width: 100%;
+            padding: 0.95rem;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+         border-radius: 50px; font-family: \'Outfit\', sans-serif; border-radius: 50px; font-family: \'Outfit\', sans-serif; border-radius: 50px; font-family: \'Outfit\', sans-serif;}
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(38, 174, 159, 0.3);
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+        }
+        .login-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .login-link a:hover {
+            color: var(--primary-dark);
+        }
+        .compliance-notice {
+            background: var(--secondary-bg);
+            padding: 1rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+            color: #333;
+            line-height: 1.6;
+        }
+        .field-hint {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 0.3rem;
+        }
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .doctor-register-container {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="doctor-register-container">
+        <!-- Registration Header -->
+        <div class="register-header">
+            <h1><img src="{{ url_for('static', filename='logo.svg') }}" alt="Recovery Assist" class="login-logo"> Recovery Assist</h1>
+            <p>Healthcare Professional Registration</p>
+        </div>
+
+        <!-- Compliance Notice -->
+        <div class="compliance-notice">
+            ✓ Secure registration for verified healthcare professionals | HIPAA Compliant
+        </div>
+
+        <!-- Registration Form -->
+        <form method="POST">
+            <!-- Full Name -->
+            <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input 
+                    type="text" 
+                    id="name"
+                    name="name" 
+                    placeholder="Dr. John Smith" 
+                    required
+                >
+            </div>
+
+            <!-- Professional ID and Phone Row -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="doctor_id">Professional / License ID *</label>
+                    <input 
+                        type="text" 
+                        id="doctor_id"
+                        name="doctor_id" 
+                        placeholder="Medical License Number" 
+                        required
+                    >
+                    <div class="field-hint">Your unique medical license identifier</div>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Contact Number *</label>
+                    <input 
+                        type="tel" 
+                        id="phone"
+                        name="phone" 
+                        placeholder="+1 (555) 000-0000" 
+                        required
+                    >
+                </div>
+            </div>
+
+            <!-- Email and Qualification Row -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email">Professional Email *</label>
+                    <input 
+                        type="email" 
+                        id="email"
+                        name="email" 
+                        placeholder="doctor@hospital.com" 
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="qualification">Medical Qualification *</label>
+                    <input 
+                        type="text" 
+                        id="qualification"
+                        name="qualification" 
+                        placeholder="e.g., MBBS, MS, MD, PhD" 
+                        required
+                    >
+                    <div class="field-hint">Primary medical degree</div>
+                </div>
+            </div>
+
+            <!-- Hospital Name -->
+            <div class="form-group">
+                <label for="hospital">Hospital / Clinic / Practice *</label>
+                <input 
+                    type="text" 
+                    id="hospital"
+                    name="hospital" 
+                    placeholder="Name of your medical institution" 
+                    required
+                >
+            </div>
+
+            <!-- Experience -->
+            <div class="form-group">
+                <label for="experience">Professional Experience *</label>
+                <textarea 
+                    id="experience"
+                    name="experience" 
+                    placeholder="e.g., 15 years in orthopedic surgery with specialization in joint replacement and arthroscopy. Experience in managing pre and post-operative patient care."
+                    required
+                ></textarea>
+                <div class="field-hint">Describe your medical experience, specializations, and areas of expertise</div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password">Create Secure Password *</label>
+                <input 
+                    type="password" 
+                    id="password"
+                    name="password" 
+                    placeholder="Minimum 8 characters" 
+                    required
+                    minlength="8"
+                    autocomplete="new-password"
+                >
+                <div class="field-hint">Use a strong password with uppercase, lowercase, numbers, and symbols</div>
+            </div>
+
+            <!-- Terms -->
+            <div class="compliance-notice">
+                By registering, you certify that:
+                <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                    <li>You are a licensed healthcare professional</li>
+                    <li>You accept the Medical Professional Agreement</li>
+                    <li>You will maintain HIPAA compliance</li>
+                </ul>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit">Create Professional Account</button>
+        </form>
+
+        <!-- Login Link -->
+        <div class="login-link">
+            Already registered? 
+            <a href="{{ url_for('doctor_login') }}">Sign In</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+    :root {
+      --primary-color: #26AE9F;
+      --primary-light: #B8E5DB;
+      --primary-dark: #538F86;
+      --secondary-bg: #B2D3CC;
+      --light-bg: #DDDEDC;
+      --main-bg: #ffffff;
+      --dark-text: #1A302D;
+      --muted-text: #538F86;
+      --success-color: #81C784;
+      --error-color: #E57373;
+    }
+
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Chat | Recovery Assist</title>
+<style>
+* { box-sizing: border-box; }
+body { 
+  font-family: 'Outfit', sans-serif; 
+  background: 
+    linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+    url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  margin: 0; 
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+    url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  filter: blur(6px);
+  z-index: -1;
+}
+header { background: var(--primary-color); color: white; padding: 15px 40px; font-size: 20px; display: flex; justify-content: space-between; align-items: center; }
+.back-btn { background: white; color: var(--primary-color); padding: 9px 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+.back-btn:hover { background: var(--primary-light); }
+
+.layout { display: grid; grid-template-columns: 300px 1fr; gap: 20px; width: 92%; margin: 25px auto; }
+
+/* Sidebar */
+.sidebar { display: flex; flex-direction: column; gap: 16px; }
+.info-card { background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); padding: 20px; border-left: 5px solid var(--primary-color); }
+.info-card h3 { color: var(--primary-color); margin: 0 0 14px 0; font-size: 16px; }
+.info-row { margin: 8px 0; font-size: 14px; }
+.info-label { font-weight: bold; color: var(--primary-color); display: block; font-size: 12px; margin-bottom: 2px; }
+.info-value { color: #333; }
+.badge { display: inline-block; background: var(--primary-light); color: var(--primary-color); border-radius: 4px; padding: 3px 9px; font-size: 12px; }
+.doctor-card { background: #fff3cd; border-left: 5px solid #ffc107; }
+.doctor-card h3 { color: #856404; }
+.doctor-card .info-label { color: #856404; }
+.view-detail-btn { display: block; background: var(--primary-color); color: white; text-align: center; padding: 10px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px; margin-top: 4px; }
+.view-detail-btn:hover { background: var(--primary-dark); }
+
+/* Chat panel */
+.chat-panel { background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: calc(100vh - 120px); min-height: 500px; }
+.chat-header { padding: 18px 22px; border-bottom: 2px solid var(--primary-light); }
+.chat-header h2 { color: var(--primary-color); margin: 0 0 4px 0; font-size: 18px; }
+.chat-header p { color: #888; margin: 0; font-size: 13px; }
+.chatbox { flex: 1; overflow-y: auto; padding: 16px; background: #f9f9f9; }
+.message { margin: 10px 0; padding: 11px 14px; border-radius: 8px; word-wrap: break-word; max-width: 80%; }
+.message.patient { background: var(--primary-light); border-left: 4px solid var(--primary-color); margin-right: auto; }
+.message.doctor { background: #fff3cd; border-left: 4px solid #ffc107; margin-left: auto; }
+.message-sender { font-size: 12px; font-weight: bold; margin-bottom: 4px; }
+.message.patient .message-sender { color: var(--primary-color); }
+.message.doctor .message-sender { color: #e67e00; }
+.message-text { margin: 0; color: #333; font-size: 14px; }
+.message-time { font-size: 11px; color: #aaa; margin-top: 5px; }
+.no-messages { text-align: center; padding: 50px 20px; color: #bbb; }
+.chat-input-area { padding: 14px 16px; border-top: 1px solid #eee; display: flex; gap: 10px; }
+.chat-input { flex: 1; border: 1px solid #ddd; padding: 11px 14px; border-radius: 12px; font-size: 14px; font-family: 'Outfit', sans-serif; }
+.chat-input:focus { outline: none; border-color: var(--primary-color); }
+.send-btn { background: var(--primary-color); color: white; border: none; padding: 11px 24px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 14px; }
+.send-btn:hover { background: var(--primary-dark); }
+
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr; }
+  .chat-panel { height: 500px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span><img src="{{ url_for('static', filename='logo.svg') }}" alt="Recovery Assist" class="nav-logo"> 💬 Chat - Recovery Assist</span>
+  <a href="{{ back_url }}"><button class="back-btn">← Back</button></a>
+</header>
+
+<div class="layout">
+
+  <!-- Sidebar: Patient Info + Doctor Info -->
+  <div class="sidebar">
+
+    <div class="info-card">
+      <h3>👤 Patient Information</h3>
+      <div class="info-row">
+        <span class="info-label">Name</span>
+        <span class="info-value">{{ patient_name }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Age</span>
+        <span class="info-value">{{ patient_age }} years</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Gender</span>
+        <span class="info-value">{{ patient_gender }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Diagnosis</span>
+        <span class="info-value"><span class="badge">{{ diagnosis }}</span></span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Surgery</span>
+        <span class="info-value">{{ surgery if surgery else '—' }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Hospital</span>
+        <span class="info-value">{{ hospital if hospital else '—' }}</span>
+      </div>
+    </div>
+
+    <div class="info-card doctor-card">
+      <h3>👨⚕️ Assigned Doctor</h3>
+      <div class="info-row">
+        <span class="info-label">Name</span>
+        <span class="info-value">{{ doctor_name }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Phone</span>
+        <span class="info-value">{{ doctor_phone }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Email</span>
+        <span class="info-value">{{ doctor_email }}</span>
+      </div>
+    </div>
+
+    <a href="{{ url_for('view_case', case_id=case_id) }}" class="view-detail-btn">📋 View Full Case Details</a>
+
+  </div>
+
+  <!-- Chat Panel -->
+  <div class="chat-panel">
+    <div class="chat-header">
+      <h2>💬 Conversation</h2>
+      <p>
+        {% if is_doctor %}
+        Chatting with patient: {{ patient_name }}
+        {% else %}
+        Chatting with Dr. {{ doctor_name }}
+        {% endif %}
+      </p>
+    </div>
+
+    <div class="chatbox" id="chatbox">
+      {% if messages %}
+        {% for msg in messages %}
+        <div class="message {{ msg.sender_type }}">
+          <div class="message-sender">
+            {% if msg.sender_type == 'patient' %}👤 {{ patient_name }}{% else %}👨⚕️ Dr. {{ doctor_name }}{% endif %}
+          </div>
+          <p class="message-text">{{ msg.message }}</p>
+          <div class="message-time">{{ msg.timestamp }}</div>
+        </div>
+        {% endfor %}
+      {% else %}
+      <div class="no-messages">
+        <p>No messages yet. Start the conversation!</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" class="chat-input" placeholder="Type your message..." />
+      <button class="send-btn" onclick="sendMessage()">Send ➤</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var caseId = {{ case_id }};
+var doctorId = {{ doctor_id }};
+var isDoctor = {% if is_doctor %}true{% else %}false{% endif %};
+var patientName = "{{ patient_name }}";
+var doctorName = "{{ doctor_name }}";
+
+var chatbox = document.getElementById('chatbox');
+chatbox.scrollTop = chatbox.scrollHeight;
+
+function sendMessage() {
+  var input = document.getElementById('chatInput');
+  var msg = input.value.trim();
+  if (!msg) return;
+
+  var senderType = isDoctor ? 'doctor' : 'patient';
+
+  fetch('/send_message/' + caseId + '/' + doctorId, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: msg, sender_type: senderType })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.status === 'success') {
+      input.value = '';
+      var noMsg = chatbox.querySelector('.no-messages');
+      if (noMsg) noMsg.remove();
+      appendMessage(senderType, msg, new Date().toLocaleString());
+    } else {
+      alert('Error: ' + data.message);
+    }
+  });
+}
+
+function appendMessage(senderType, text, time) {
+  var div = document.createElement('div');
+  div.className = 'message ' + senderType;
+  var senderLabel = senderType === 'doctor' ? '👨⚕️ Dr. ' + doctorName : '👤 ' + patientName;
+  div.innerHTML = '<div class="message-sender">' + senderLabel + '</div>' +
+    '<p class="message-text">' + text + '</p>' +
+    '<div class="message-time">' + time + '</div>';
+  chatbox.appendChild(div);
+  chatbox.scrollTop = chatbox.scrollHeight;
+}
+
+document.getElementById('chatInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') sendMessage();
+});
+
+// Auto-refresh every 4 seconds
+setInterval(function() {
+  fetch('/api/messages/' + caseId)
+    .then(r => r.json())
+    .then(data => {
+      if (!data.messages) return;
+      var current = chatbox.querySelectorAll('.message').length;
+      if (data.messages.length > current) {
+        chatbox.innerHTML = '';
+        data.messages.forEach(function(m) {
+          var label = m.sender_type === 'doctor' ? '👨⚕️ Dr. ' + doctorName : '👤 ' + patientName;
+          var div = document.createElement('div');
+          div.className = 'message ' + m.sender_type;
+          div.innerHTML = '<div class="message-sender">' + label + '</div>' +
+            '<p class="message-text">' + m.message + '</p>' +
+            '<div class="message-time">' + m.timestamp + '</div>';
+          chatbox.appendChild(div);
+        });
+        chatbox.scrollTop = chatbox.scrollHeight;
+      }
+    });
+}, 4000);
+</script>
+</body>
+</html>

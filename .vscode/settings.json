@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "templates/*.html": "jinja"
+    }
+}</content>
+<parameter name="filePath">c:\Users\niran\Desktop\recoveryassist new\.vscode\settings.json

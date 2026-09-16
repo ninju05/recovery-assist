@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+app.log
+*.log
+
+tesseract_installer.exe
+*.exe
+
+.env
+
+uploads/*
+!uploads/.gitkeep

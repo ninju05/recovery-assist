@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Upload Medical Records - Recovery Assist</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <style>
+        body {
+            background: 
+                linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+                url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+                url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(6px);
+            z-index: -1;
+        }
+        
+        .upload-header {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 0;
+        }
+        .upload-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .upload-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+        .upload-container {
+            max-width: 700px;
+            margin: -2rem auto 2rem;
+            padding: 0 2rem;
+        }
+        .upload-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(38, 174, 159, 0.15);
+            padding: 3rem 2rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover {
+            gap: 0.8rem;
+        }
+        .upload-instructions {
+            background: var(--secondary-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .upload-instructions h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        .upload-instructions ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+        .upload-instructions li {
+            margin: 0.3rem 0;
+            color: #333;
+        }
+        form {
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
+        }
+        .upload-area {
+            border: 2px dashed var(--primary-color);
+            border-radius: 10px;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #F9FAFC;
+        }
+        .upload-area:hover {
+            border-color: var(--primary-dark);
+            background: var(--secondary-bg);
+        }
+        .upload-area.dragover {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+        }
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .upload-area p {
+            margin: 0.5rem 0;
+            color: #333;
+        }
+        .upload-area .primary-text {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+        .upload-area .secondary-text {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        #fileInput {
+            display: none;
+        }
+        .file-info {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #e8f5e9;
+            border-left: 4px solid var(--success-color);
+            border-radius: 12px;
+            display: none;
+        }
+        .file-info.show {
+            display: block;
+        }
+        .file-name {
+            font-weight: 600;
+            color: #1b5e20;
+            word-break: break-word;
+        }
+        .form-group {
+            margin-top: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            padding: 0.85rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: inherit;
+            min-height: 100px;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(38, 174, 159, 0.1);
+        }
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        button[type="submit"] {
+            padding: 0.95rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            min-width: 200px;
+         border-radius: 50px; font-family: \'Outfit\', sans-serif; border-radius: 50px; font-family: \'Outfit\', sans-serif; border-radius: 50px; font-family: \'Outfit\', sans-serif;}
+        button[type="reset"] {
+            background: #e0e0e0;
+            color: #333;
+            padding: 0.95rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        button[type="reset"]:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
+        }
+        .security-notice {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #e65100;
+        }
+        .security-notice strong {
+            color: #bf360c;
+        }
+        @media (max-width: 600px) {
+            .upload-card {
+                padding: 1.5rem 1rem;
+            }
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="logo">
+            <span class="logo-icon">🏥</span>
+            <span>Recovery Assist</span>
+        </div>
+        <nav>
+            <a href="{{ url_for('patient_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}" style="background: var(--error-color);">Logout</a>
+        </nav>
+    </header>
+
+    <!-- UPLOAD HEADER -->
+    <div class="upload-header">
+        <h1>📤 Upload Medical Records</h1>
+        <p>Submit your hospital discharge summary for AI-powered analysis and recovery planning</p>
+    </div>
+
+    <!-- UPLOAD CONTAINER -->
+    <div class="upload-container">
+        <!-- Back Link -->
+        <a href="{{ url_for('patient_dashboard') }}" class="back-link">
+            ← Back to Dashboard
+        </a>
+
+        <!-- Upload Card -->
+        <div class="upload-card">
+            <!-- Instructions -->
+            <div class="upload-instructions">
+                <h3>📋 Upload Requirements</h3>
+                <ul>
+                    <li>File Format: <strong>PDF only</strong></li>
+                    <li>File Size: Maximum <strong>10MB</strong></li>
+                    <li>Content: Hospital discharge summary, medical report, or clinical documentation</li>
+                    <li>Supported Documents: Surgical reports, discharge summaries, clinical notes</li>
+                </ul>
+            </div>
+
+            <!-- Upload Form -->
+            <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                <!-- Upload Area -->
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <p class="primary-text">Click to select or drag your PDF file here</p>
+                    <p class="secondary-text">We accept PDF documents up to 10MB</p>
+                    <input 
+                        type="file" 
+                        id="fileInput" 
+                        name="report" 
+                        accept=".pdf" 
+                        required
+                    >
+                </div>
+
+                <!-- Selected File Info -->
+                <div class="file-info" id="fileInfo">
+                    <p>📎 Selected File: <span class="file-name" id="fileName"></span></p>
+                </div>
+
+                <!-- Additional Notes -->
+                <div class="form-group">
+                    <label for="notes">Additional Medical Notes (Optional)</label>
+                    <textarea 
+                        id="notes"
+                        name="notes" 
+                        placeholder="Any additional context or specific concerns about your recovery..."
+                    ></textarea>
+                    <small style="color: #999;">This helps us provide more personalized recommendations</small>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="button-group">
+                    <button type="submit" class="btn">
+                        🔍 Upload & Analyze Document
+                    </button>
+                    <button type="reset" onclick="resetForm()">
+                        ✕ Clear
+                    </button>
+                </div>
+
+                <!-- Security Notice -->
+                <div class="security-notice">
+                    🔒 <strong>Your Privacy Matters:</strong> All documents are encrypted and processed securely. Your medical information is protected under HIPAA standards and never shared with unauthorized parties.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+
+        // Click to upload
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            fileInput.files = e.dataTransfer.files;
+            updateFileInfo();
+        });
+
+        // File selection
+        fileInput.addEventListener('change', updateFileInfo);
+
+        function updateFileInfo() {
+            if (fileInput.files && fileInput.files[0]) {
+                fileName.textContent = fileInput.files[0].name;
+                fileInfo.classList.add('show');
+                uploadArea.style.opacity = '0.7';
+            } else {
+                fileInfo.classList.remove('show');
+                uploadArea.style.opacity = '1';
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('uploadForm').reset();
+            fileInfo.classList.remove('show');
+            uploadArea.style.opacity = '1';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+    :root {
+      --primary-color: #26AE9F;
+      --primary-light: #B8E5DB;
+      --primary-dark: #538F86;
+      --secondary-bg: #B2D3CC;
+      --light-bg: #DDDEDC;
+      --main-bg: #ffffff;
+      --dark-text: #1A302D;
+      --muted-text: #538F86;
+      --success-color: #81C784;
+      --error-color: #E57373;
+    }
+
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Patient Details | Recovery Assist</title>
+<style>
+body { 
+    font-family: 'Outfit', sans-serif; 
+    background: 
+        linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+        url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    margin: 0; 
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+        url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    filter: blur(6px);
+    z-index: -1;
+}
+
+header { background: var(--primary-color); color: white; padding: 15px 40px; font-size: 20px; display: flex; justify-content: space-between; align-items: center; }
+.back-btn { background: white; color: var(--primary-color); padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+.back-btn:hover { background: var(--primary-light); }
+.container { width: 90%; margin: 30px auto; }
+.patient-header { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+.patient-header h1 { color: var(--primary-color); margin: 0 0 8px 0; }
+.patient-header p { margin: 4px 0; color: #666; }
+.info-label { font-weight: bold; color: var(--primary-color); }
+.download-btn { background: var(--primary-color); color: white; padding: 12px 22px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 15px; }
+.download-btn:hover { background: var(--primary-dark); }
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 25px; }
+.info-card { background: white; padding: 18px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-left: 5px solid var(--primary-color); }
+.info-card h3 { color: var(--primary-color); margin-top: 0; }
+.info-card p { margin: 6px 0; color: #333; }
+.tabs { display: flex; flex-wrap: wrap; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+.tab-button { padding: 14px 16px; border: none; background: transparent; cursor: pointer; font-size: 13px; color: #666; border-bottom: 3px solid transparent; transition: all 0.2s; }
+.tab-button:hover { background: #f0f0f0; }
+.tab-button.active { background: var(--primary-light); color: var(--primary-color); border-bottom-color: var(--primary-color); }
+.tab-content { background: white; padding: 28px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: none; }
+.tab-content.active { display: block; }
+.tab-content h2 { color: var(--primary-color); margin-top: 0; }
+.section-title { color: var(--primary-color); font-size: 16px; font-weight: bold; margin: 18px 0 8px 0; }
+ul { line-height: 1.8; padding-left: 20px; }
+ul li { margin: 6px 0; color: #333; }
+.no-data { text-align: center; padding: 25px; color: #999; background: #f9f9f9; border-radius: 8px; }
+.editable-section { border: 1px solid var(--primary-light); border-radius: 8px; padding: 15px; margin-top: 15px; background: #f9fffe; }
+.editable-section .section-label { font-size: 13px; font-weight: bold; color: var(--primary-color); margin-bottom: 8px; }
+.edit-textarea { width: 100%; min-height: 100px; border: 1px solid #ccc; border-radius: 5px; padding: 10px; font-size: 14px; font-family: 'Outfit', sans-serif; resize: vertical; box-sizing: border-box; }
+.edit-textarea:focus { outline: none; border-color: var(--primary-color); }
+.btn-save { background: var(--primary-color); color: white; border: none; padding: 9px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 8px; }
+.btn-save:hover { background: var(--primary-dark); }
+.save-status { font-size: 13px; color: green; margin-left: 10px; display: none; }
+.doctor-badge { display: inline-block; background: #fff3cd; color: #856404; border: 1px solid #ffc107; border-radius: 4px; padding: 2px 8px; font-size: 12px; margin-left: 8px; }
+.progress-item { background: #f0f9ff; border-left: 4px solid var(--primary-color); padding: 10px 15px; margin: 8px 0; border-radius: 0 6px 6px 0; color: #333; }
+.chatbox { border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; background: #f9f9f9; max-height: 320px; overflow-y: auto; margin-bottom: 12px; }
+.message { margin: 8px 0; padding: 10px 12px; border-radius: 8px; word-wrap: break-word; }
+.message.patient { background: var(--primary-light); margin-left: 15px; border-left: 4px solid var(--primary-color); }
+.message.doctor { background: #fff3cd; margin-right: 15px; border-left: 4px solid #ffc107; }
+.message-sender { font-size: 12px; font-weight: bold; margin-bottom: 4px; }
+.message.patient .message-sender { color: var(--primary-color); }
+.message.doctor .message-sender { color: #e67e00; }
+.message-time { font-size: 11px; color: #999; margin-top: 4px; }
+.chat-input-row { display: flex; gap: 10px; margin-top: 8px; }
+.chat-input { flex: 1; border: 1px solid #ddd; padding: 10px; border-radius: 5px; font-size: 14px; font-family: 'Outfit', sans-serif; }
+.chat-input:focus { outline: none; border-color: var(--primary-color); }
+.chat-send-btn { background: var(--primary-color); color: white; border: none; padding: 10px 22px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+.chat-send-btn:hover { background: var(--primary-dark); }
+.no-messages { text-align: center; padding: 30px; color: #aaa; }
+.open-chat-btn { display: inline-block; background: var(--primary-color); color: white; padding: 10px 20px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px; margin-bottom: 14px; }
+.open-chat-btn:hover { background: var(--primary-dark); }
+.info-banner { background: var(--primary-light); border-left: 4px solid var(--primary-color); padding: 14px; border-radius: 5px; color: var(--primary-dark); margin-bottom: 14px; }
+.info-banner a { color: var(--primary-color); font-weight: bold; }
+</style>
+</head>
+<body>
+
+<header>
+<span>🏥 Patient Details - Recovery Assist</span>
+<a href="{% if is_doctor %}{{ url_for('doctor_dashboard') }}{% else %}{{ url_for('patient_dashboard') }}{% endif %}"><button class="back-btn">← Back</button></a>
+</header>
+
+<div class="container">
+
+<div class="patient-header">
+  <div>
+    <h1>👤 {{ patient.patient_name }}</h1>
+    <p><span class="info-label">Case ID:</span> {{ patient.id }}</p>
+    <p><span class="info-label">Date Uploaded:</span> {{ patient.upload_date }}</p>
+  </div>
+  <div>
+    <a href="{{ url_for('download_pdf', case_id=case_id) }}" style="text-decoration:none;">
+      <button class="download-btn">📥 Download PDF Report</button>
+    </a>
+  </div>
+</div>
+
+<div class="info-grid">
+  <div class="info-card">
+    <h3>👤 Demographics</h3>
+    <p><span class="info-label">Age:</span> {{ patient.age }} years</p>
+    <p><span class="info-label">Gender:</span> {{ patient.gender }}</p>
+    <p><span class="info-label">Hospital:</span> {{ patient.hospital }}</p>
+  </div>
+  <div class="info-card">
+    <h3>🏥 Medical Information</h3>
+    <p><span class="info-label">Diagnosis:</span> {{ patient.diagnosis }}</p>
+    <p><span class="info-label">Surgery:</span> {{ patient.surgery }}</p>
+    <p><span class="info-label">Assigned Doctor:</span> {{ patient.doctor if patient.doctor else "Not assigned" }}</p>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-button active" onclick="showTab('diagnosis', event)">📋 Diagnosis</button>
+  <button class="tab-button" onclick="showTab('recovery_tips', event)">💡 Recovery Tips</button>
+  <button class="tab-button" onclick="showTab('medications', event)">💊 Medications</button>
+  <button class="tab-button" onclick="showTab('physiotherapy', event)">🏃 Physiotherapy</button>
+  <button class="tab-button" onclick="showTab('diet', event)">🥗 Diet Chart</button>
+  <button class="tab-button" onclick="showTab('recovery', event)">📈 Recovery Progress</button>
+  <button class="tab-button" onclick="showTab('chat', event)">💬 Chat</button>
+</div>
+
+<div id="diagnosis" class="tab-content active">
+  <h2>📋 Diagnosis & Report</h2>
+  <div class="section-title">Diagnosis</div>
+  <p>{{ patient.diagnosis }}</p>
+  <div class="section-title">Surgery</div>
+  <p>{{ patient.surgery }}</p>
+  <div class="section-title">Simplified Explanation</div>
+  <p>{{ patient.simplified_report }}</p>
+  <div class="section-title">Follow-up Instructions</div>
+  <p>{{ patient.followup if patient.followup else "No follow-up instructions." }}</p>
+</div>
+
+<div id="recovery_tips" class="tab-content">
+  <h2>💡 Recovery Tips</h2>
+  <div class="section-title">Recovery Timeline</div>
+  {% if patient.recovery_progress %}
+  <ul>
+    {% for item in patient.recovery_progress %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="no-data"><p>No recovery tips available.</p></div>
+  {% endif %}
+  {% if is_doctor %}
+  <div class="editable-section">
+    <div class="section-label">✏️ Doctor's Recommendations (editable)</div>
+    <textarea class="edit-textarea" id="rec_doctor_recommendations" placeholder="Add your recommendations for the patient...">{{ patient.doctor_recommendations if patient.doctor_recommendations else '' }}</textarea>
+    <br>
+    <button class="btn-save" onclick="saveRecommendations()">💾 Save Recommendations</button>
+    <span class="save-status" id="saveStatus">✓ Saved!</span>
+  </div>
+  {% else %}
+  {% if patient.doctor_recommendations %}
+  <div class="section-title">👨‍⚕️ Doctor's Recommendations</div>
+  <div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 15px;border-radius:0 6px 6px 0;color:#333;">
+    {{ patient.doctor_recommendations }}
+  </div>
+  {% endif %}
+  {% endif %}
+</div>
+
+<div id="medications" class="tab-content">
+  <h2>💊 Medication Schedule</h2>
+  {% if patient.medications %}
+  <ul>
+    {% for med in patient.medications %}
+    <li>{{ med }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="no-data"><p>No medications prescribed.</p></div>
+  {% endif %}
+</div>
+
+<div id="physiotherapy" class="tab-content">
+  <h2>🏃 Physiotherapy Guide</h2>
+  {% if patient.physiotherapy %}
+  <ul>
+    {% for item in patient.physiotherapy %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="no-data"><p>No physiotherapy exercises prescribed.</p></div>
+  {% endif %}
+  {% if is_doctor %}
+  <div class="editable-section">
+    <div class="section-label">✏️ Edit Physiotherapy Guide (one item per line)</div>
+    <textarea class="edit-textarea" id="edit_physiotherapy" placeholder="Enter physiotherapy instructions, one per line...">{{ patient.physiotherapy | join('\n') if patient.physiotherapy else '' }}</textarea>
+    <br>
+    <button class="btn-save" onclick="saveRecommendations()">💾 Save Changes</button>
+    <span class="save-status" id="saveStatus2">✓ Saved!</span>
+  </div>
+  {% endif %}
+</div>
+
+<div id="diet" class="tab-content">
+  <h2>🥗 Diet Chart</h2>
+  {% if patient.diet %}
+  <ul>
+    {% for item in patient.diet %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="no-data"><p>No diet recommendations available.</p></div>
+  {% endif %}
+  {% if is_doctor %}
+  <div class="editable-section">
+    <div class="section-label">✏️ Edit Diet Chart (one item per line)</div>
+    <textarea class="edit-textarea" id="edit_diet" placeholder="Enter diet recommendations, one per line...">{{ patient.diet | join('\n') if patient.diet else '' }}</textarea>
+    <br>
+    <button class="btn-save" onclick="saveRecommendations()">💾 Save Changes</button>
+    <span class="save-status" id="saveStatus3">✓ Saved!</span>
+  </div>
+  {% endif %}
+</div>
+
+<div id="recovery" class="tab-content">
+  <h2>📈 Recovery Progress</h2>
+  {% if patient.recovery_progress %}
+    {% for item in patient.recovery_progress %}
+    <div class="progress-item">{{ item }}</div>
+    {% endfor %}
+  {% else %}
+  <div class="no-data"><p>No recovery progress recorded yet.</p></div>
+  {% endif %}
+</div>
+
+<div id="chat" class="tab-content">
+  <h2>💬 Patient-Doctor Chat</h2>
+
+  {% if patient.doctor_id %}
+  <a href="{{ url_for('chat_page', case_id=case_id, doctor_id=patient.doctor_id) }}" class="open-chat-btn">
+    💬 Open Full Chat Page
+  </a>
+  {% else %}
+    {% if not is_doctor %}
+    <div class="info-banner">
+      No doctor assigned yet.
+      <a href="{{ url_for('patient_doctors_list', case_id=case_id) }}">Assign a Doctor →</a>
+    </div>
+    {% endif %}
+  {% endif %}
+
+  <div class="chatbox" id="chatbox">
+    {% if messages %}
+      {% for msg in messages %}
+      <div class="message {{ msg.sender_type }}">
+        <div class="message-sender">
+          {% if msg.sender_type == 'patient' %}👤 Patient{% else %}👨‍⚕️ Doctor{% endif %}
+        </div>
+        <p style="margin:0;">{{ msg.message }}</p>
+        <div class="message-time">{{ msg.timestamp }}</div>
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="no-messages"><p>No messages yet.</p></div>
+    {% endif %}
+  </div>
+
+  {% if patient.doctor_id %}
+  <div class="chat-input-row">
+    <input type="text" id="chatInput" class="chat-input" placeholder="Type a message..." />
+    <button class="chat-send-btn" onclick="sendChatMessage()">Send</button>
+  </div>
+  {% endif %}
+</div>
+
+</div>
+
+<script>
+var caseId = {{ case_id }};
+var doctorId = {{ patient.doctor_id if patient.doctor_id else 0 }};
+var isDoctor = {{ 'true' if is_doctor else 'false' }};
+
+function showTab(tabName, event) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabName).classList.add('active');
+  if (event) event.target.classList.add('active');
+  if (tabName === 'chat') scrollChat();
+}
+
+function scrollChat() {
+  var cb = document.getElementById('chatbox');
+  if (cb) cb.scrollTop = cb.scrollHeight;
+}
+
+function saveRecommendations() {
+  var physioEl = document.getElementById('edit_physiotherapy');
+  var dietEl = document.getElementById('edit_diet');
+  var recEl = document.getElementById('rec_doctor_recommendations');
+  var physio = physioEl ? physioEl.value.split('\n').map(s => s.trim()).filter(s => s) : [];
+  var diet = dietEl ? dietEl.value.split('\n').map(s => s.trim()).filter(s => s) : [];
+  var rec = recEl ? recEl.value.trim() : '';
+  fetch('/save_recommendations/' + caseId, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ physiotherapy: physio, diet: diet, doctor_recommendations: rec })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.status === 'success') {
+      document.querySelectorAll('.save-status').forEach(el => {
+        el.style.display = 'inline';
+        setTimeout(() => el.style.display = 'none', 2500);
+      });
+    } else { alert('Error saving: ' + data.message); }
+  })
+  .catch(() => alert('Error saving recommendations.'));
+}
+
+function sendChatMessage() {
+  var input = document.getElementById('chatInput');
+  if (!input) return;
+  var msg = input.value.trim();
+  if (!msg) return;
+  var senderType = isDoctor ? 'doctor' : 'patient';
+  fetch('/send_message/' + caseId + '/' + doctorId, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: msg, sender_type: senderType })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.status === 'success') {
+      input.value = '';
+      var cb = document.getElementById('chatbox');
+      var noMsg = cb.querySelector('.no-messages');
+      if (noMsg) noMsg.remove();
+      var div = document.createElement('div');
+      div.className = 'message ' + senderType;
+      div.innerHTML = '<div class="message-sender">' + (isDoctor ? '👨‍⚕️ Doctor' : '👤 Patient') + '</div>' +
+        '<p style="margin:0;">' + msg + '</p>' +
+        '<div class="message-time">' + new Date().toLocaleString() + '</div>';
+      cb.appendChild(div);
+      scrollChat();
+    } else { alert('Error: ' + data.message); }
+  });
+}
+
+var chatInputEl = document.getElementById('chatInput');
+if (chatInputEl) {
+  chatInputEl.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') sendChatMessage();
+  });
+}
+
+setInterval(function() {
+  fetch('/api/messages/' + caseId)
+    .then(r => r.json())
+    .then(data => {
+      var cb = document.getElementById('chatbox');
+      var currentCount = cb.querySelectorAll('.message').length;
+      if (data.messages && data.messages.length > currentCount) {
+        cb.innerHTML = '';
+        data.messages.forEach(function(m) {
+          var div = document.createElement('div');
+          div.className = 'message ' + m.sender_type;
+          div.innerHTML = '<div class="message-sender">' + (m.sender_type === 'doctor' ? '👨‍⚕️ Doctor' : '👤 Patient') + '</div>' +
+            '<p style="margin:0;">' + m.message + '</p>' +
+            '<div class="message-time">' + m.timestamp + '</div>';
+          cb.appendChild(div);
+        });
+        scrollChat();
+      }
+    });
+}, 5000);
+
+scrollChat();
+</script>
+</body>
+</html>

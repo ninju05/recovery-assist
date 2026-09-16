@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Patient Details | Recovery Assist</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+<style>
+    body {
+        background: 
+            linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+            url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        position: relative;
+    }
+    
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            linear-gradient(135deg, rgba(38, 174, 159, 0.4) 0%, rgba(26, 48, 45, 0.4) 100%),
+            url('https://plus.unsplash.com/premium_photo-1681995460558-738a8856313c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        filter: blur(6px);
+        z-index: -1;
+    }
+</style>
+</head>
+<body>
+
+<div class="app-layout">
+    
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ url_for('static', filename='logo.svg') }}" alt="Recovery Assist" class="sidebar-logo">
+            <span>Recovery Assist</span>
+        </div>
+        <div class="sidebar-nav">
+            <button class="tab-button active" onclick="showTab('diagnosis', event)">
+                <span>📋 Diagnosis</span>
+            </button>
+            <button class="tab-button" onclick="showTab('recovery_tips', event)">
+                <span>💡 Recovery Tips</span>
+            </button>
+            <button class="tab-button" onclick="showTab('medications', event)">
+                <span>💊 Medications</span>
+            </button>
+            <button class="tab-button" onclick="showTab('physiotherapy', event)">
+                <span>🏃 Physiotherapy</span>
+            </button>
+            <button class="tab-button" onclick="showTab('diet', event)">
+                <span>🥗 Diet Chart</span>
+            </button>
+            <button class="tab-button" onclick="showTab('recovery', event)">
+                <span>📈 Progress</span>
+            </button>
+            <button class="tab-button" onclick="showTab('chat', event)">
+                <span>💬 Doctor Chat</span>
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-wrapper">
+        
+        <div class="top-header">
+            <h1>Patient Profile</h1>
+            <a href="{% if is_doctor %}{{ url_for('doctor_dashboard') }}{% else %}{{ url_for('patient_dashboard') }}{% endif %}" class="back-btn">← Back to Dashboard</a>
+        </div>
+
+        <div class="top-cards">
+            
+            <div class="card profile-card">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-details">
+                    <h2>{{ patient.patient_name if patient.patient_name and patient.patient_name != 'Unknown' else 'Patient Information' }}</h2>
+                    <div class="pd-row">
+                        <div class="pd-item">
+                            <span class="label">Age:</span> 
+                            {% if patient.age and patient.age != '-' %}{{ patient.age }} years{% else %}<em>Not provided</em>{% endif %}
+                        </div>
+                        <div class="pd-item">
+                            <span class="label">Date Uploaded:</span> {{ patient.upload_date }}
+                        </div>
+                        <div class="pd-item">
+                            <span class="label">Gender:</span> 
+                            {% if patient.gender and patient.gender != '-' %}{{ patient.gender }}{% else %}<em>Not provided</em>{% endif %}
+                        </div>
+                        <div class="pd-item">
+                            <span class="label">Hospital:</span> 
+                            {% if patient.hospital and patient.hospital != '-' %}{{ patient.hospital }}{% else %}<em>Not provided</em>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card side-card">
+                <h3>Medical Details</h3>
+                <p><span class="label">Case ID:</span> #{{ patient.id }}</p>
+                <p><span class="label">Doctor:</span> 
+                    {% if patient.doctor %}
+                    <span class="doctor-badge">👨‍⚕️ {{ patient.doctor }}</span>
+                    {% else %}
+                    Not assigned
+                    {% endif %}
+                </p>
+                <a href="{{ url_for('download_pdf', case_id=case_id) }}" style="text-decoration:none;">
+                    <button class="download-btn">📥 Download Report</button>
+                </a>
+            </div>
+
+        </div>
+
+        <div class="card bottom-card">
+            
+            <div id="diagnosis" class="tab-content active">
+                <h2 class="section-title">Diagnosis & Report Overview</h2>
+                <div class="sub-title">Diagnosis</div>
+                <p>{{ patient.diagnosis }}</p>
+                <div class="sub-title">Surgery</div>
+                <p>{{ patient.surgery }}</p>
+                <div class="sub-title">Simplified Explanation</div>
+                <p style="color: #555; line-height: 1.6; white-space: pre-wrap;">{{ patient.simplified_report }}</p>
+                <div class="sub-title">Follow-up Instructions</div>
+                <p>{{ patient.followup if patient.followup else "No follow-up instructions." }}</p>
+            </div>
+
+            <div id="recovery_tips" class="tab-content">
+                <h2 class="section-title">Recovery Tips & Guidelines</h2>
+                {% if patient.recovery_progress %}
+                    {% if patient.recovery_progress.emergency %}
+                    <div class="recovery-category">
+                        <div class="category-header emergency-header">
+                            <span class="category-icon">🚨</span>
+                            <h3>Emergency Signs - Seek Immediate Medical Attention</h3>
+                        </div>
+                        <div class="category-content">
+                            <p class="category-description">Contact your doctor or go to the emergency room if you experience any of these symptoms:</p>
+                            <ul class="recovery-list emergency-list">
+                                {% for tip in patient.recovery_progress.emergency %}
+                                <li class="recovery-item">
+                                    <strong>{{ tip }}</strong>
+                                    <div class="tip-explanation">
+                                        {% if 'fever' in tip.lower() %}
+                                            <em>High fever may indicate infection. Take your temperature and contact your healthcare provider immediately.</em>
+                                        {% elif 'chest pain' in tip.lower() %}
+                                            <em>Chest pain can be serious. Don't ignore it - seek emergency care right away.</em>
+                                        {% elif 'shortness of breath' in tip.lower() %}
+                                            <em>Difficulty breathing requires immediate medical attention. This could indicate a serious complication.</em>
+                                        {% elif 'loss of bladder control' in tip.lower() %}
+                                            <em>This may indicate nerve damage or other complications requiring urgent medical evaluation.</em>
+                                        {% else %}
+                                            <em>This symptom requires immediate medical attention. Don't delay seeking help.</em>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if patient.recovery_progress.warning %}
+                    <div class="recovery-category">
+                        <div class="category-header warning-header">
+                            <span class="category-icon">⚠️</span>
+                            <h3>Warning Signs - Contact Your Doctor</h3>
+                        </div>
+                        <div class="category-content">
+                            <p class="category-description">Call your doctor if you notice any of these symptoms - they may need prompt attention:</p>
+                            <ul class="recovery-list warning-list">
+                                {% for tip in patient.recovery_progress.warning %}
+                                <li class="recovery-item">
+                                    <strong>{{ tip }}</strong>
+                                    <div class="tip-explanation">
+                                        {% if 'swelling' in tip.lower() %}
+                                            <em>Swelling can indicate poor circulation or infection. Monitor closely and inform your doctor.</em>
+                                        {% elif 'pain' in tip.lower() %}
+                                            <em>Increasing pain may signal complications. Track your pain levels and report changes.</em>
+                                        {% elif 'numbness' in tip.lower() %}
+                                            <em>Numbness could indicate nerve issues. This needs medical evaluation.</em>
+                                        {% elif 'redness' in tip.lower() or 'discharge' in tip.lower() %}
+                                            <em>Signs of infection at the surgical site. Keep the area clean and contact your doctor.</em>
+                                        {% elif 'bleeding' in tip.lower() %}
+                                            <em>Excessive bleeding requires medical attention. Apply pressure and seek help if needed.</em>
+                                        {% else %}
+                                            <em>This symptom should be evaluated by your healthcare provider. Don't ignore changes in your condition.</em>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if patient.recovery_progress.activity %}
+                    <div class="recovery-category">
+                        <div class="category-header activity-header">
+                            <span class="category-icon">🏃‍♂️</span>
+                            <h3>Activity Restrictions & Guidelines</h3>
+                        </div>
+                        <div class="category-content">
+                            <p class="category-description">Follow these activity guidelines to ensure proper healing and prevent complications:</p>
+                            <ul class="recovery-list activity-list">
+                                {% for tip in patient.recovery_progress.activity %}
+                                <li class="recovery-item">
+                                    <strong>{{ tip }}</strong>
+                                    <div class="tip-explanation">
+                                        {% if 'lifting' in tip.lower() %}
+                                            <em>Avoid heavy lifting to prevent strain on healing tissues and surgical repairs.</em>
+                                        {% elif 'driving' in tip.lower() %}
+                                            <em>Driving restrictions help prevent accidents while you recover from pain medication or limited mobility.</em>
+                                        {% elif 'strenuous' in tip.lower() %}
+                                            <em>High-intensity activities can delay healing and increase complication risk.</em>
+                                        {% elif 'bending' in tip.lower() or 'twisting' in tip.lower() %}
+                                            <em>These movements can stress surgical sites and impede proper healing.</em>
+                                        {% else %}
+                                            <em>This activity restriction is designed to protect your recovery and prevent setbacks.</em>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if patient.recovery_progress.general %}
+                    <div class="recovery-category">
+                        <div class="category-header general-header">
+                            <span class="category-icon">💡</span>
+                            <h3>General Recovery Tips</h3>
+                        </div>
+                        <div class="category-content">
+                            <p class="category-description">These general guidelines will help optimize your recovery process:</p>
+                            <ul class="recovery-list general-list">
+                                {% for tip in patient.recovery_progress.general %}
+                                <li class="recovery-item">
+                                    <strong>{{ tip }}</strong>
+                                    <div class="tip-explanation">
+                                        {% if 'rest' in tip.lower() %}
+                                            <em>Adequate rest allows your body to focus energy on healing and tissue repair.</em>
+                                        {% elif 'exercise' in tip.lower() or 'physiotherapy' in tip.lower() %}
+                                            <em>Appropriate exercises maintain mobility and strength without compromising healing.</em>
+                                        {% elif 'nutrition' in tip.lower() or 'diet' in tip.lower() %}
+                                            <em>Proper nutrition provides essential nutrients needed for tissue repair and immune function.</em>
+                                        {% elif 'medication' in tip.lower() %}
+                                            <em>Taking medications as prescribed ensures optimal pain control and prevents complications.</em>
+                                        {% else %}
+                                            <em>This guideline supports your overall recovery and helps prevent complications.</em>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="recovery-summary">
+                        <div class="summary-card">
+                            <h4>📋 Recovery Summary</h4>
+                            <p><strong>Remember:</strong> Recovery is a gradual process. Follow all guidelines carefully and contact your healthcare provider with any concerns. Your body needs time to heal properly.</p>
+                            <p><strong>Track your progress:</strong> Keep a daily journal of your symptoms, activities, and how you feel. This helps your doctor provide better care.</p>
+                        </div>
+                    </div>
+
+                {% else %}
+                <div class="no-data">No recovery tips available.</div>
+                {% endif %}
+                
+                {% if is_doctor %}
+                <div class="editable-section">
+                    <div class="section-label">✏️ Doctor's Recommendations (editable)</div>
+                    <textarea class="edit-textarea" id="rec_doctor_recommendations" placeholder="Add your recommendations for the patient...">{{ patient.doctor_recommendations if patient.doctor_recommendations else '' }}</textarea>
+                    <button class="btn-save" onclick="saveRecommendations()">💾 Save</button>
+                    <span class="save-status" id="saveStatus">✓ Saved!</span>
+                </div>
+                {% else %}
+                    {% if patient.doctor_recommendations %}
+                    <div class="sub-title">👨‍⚕️ Doctor's Recommendations</div>
+                    <div style="background:#fff3cd; padding:20px; border-radius:12px; color:#333; white-space: pre-wrap;">
+                        {{ patient.doctor_recommendations }}
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <div id="medications" class="tab-content">
+                <h2 class="section-title">Medication Schedule</h2>
+                
+                {% if patient.med_schedule %}
+                <div class="med-grid">
+                    {% for med in patient.med_schedule %}
+                    <div class="med-card">
+                        <div class="med-name">{{ med.name }}</div>
+                        <div class="med-details">
+                            <strong>💊 Dosage:</strong> {{ med.dosage }} <br>
+                            <strong>🔄 Frequency:</strong> {{ med.frequency }} <br>
+                            <strong>🍽️ Timing:</strong> {{ med.relation }} ({{ med.timing }})
+                        </div>
+                        <div class="med-instruction">
+                            <span>ℹ️</span> {{ med.instruction }}
+                        </div>
+                        <div class="med-timer-box timer-target" data-hours="{{ med.hours | join(',') }}">
+                            Calculating next dose...
+                        </div>
+                        <div class="med-actions">
+                            <button class="med-done-btn" onclick="markMedicationDone('{{ med.name }}', this)" data-med-name="{{ med.name }}">
+                                ✅ Mark as Done
+                            </button>
+                            <div class="med-status" id="status-{{ med.name | replace(' ', '-') | lower }}"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="no-data">No medications prescribed.</div>
+                {% endif %}
+                
+                {% if is_doctor %}
+                <div class="editable-section">
+                    <div class="section-label">✏️ Edit Medication Schedule (one text per line)</div>
+                    <textarea class="edit-textarea" id="edit_medications" placeholder="Enter medications, one per line...">{{ patient.medications | join('\n') if patient.medications else '' }}</textarea>
+                    <button class="btn-save" onclick="saveRecommendations()">💾 Save Changes</button>
+                    <span class="save-status" id="saveStatus4">✓ Saved!</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div id="physiotherapy" class="tab-content">
+                <h2 class="section-title">Physiotherapy Guide</h2>
+                {% if patient.physiotherapy %}
+                <ul>
+                    {% for item in patient.physiotherapy %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="no-data">No physiotherapy exercises prescribed.</div>
+                {% endif %}
+                
+                {% if is_doctor %}
+                <div class="editable-section">
+                    <div class="section-label">✏️ Edit Physiotherapy Guide (one text per line)</div>
+                    <textarea class="edit-textarea" id="edit_physiotherapy" placeholder="Enter instructions, one per line...">{{ patient.physiotherapy | join('\n') if patient.physiotherapy else '' }}</textarea>
+                    <button class="btn-save" onclick="saveRecommendations()">💾 Save Changes</button>
+                    <span class="save-status" id="saveStatus2">✓ Saved!</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div id="diet" class="tab-content">
+                <h2 class="section-title">Diet Chart</h2>
+                {% if patient.diet_chart %}
+                <div class="diet-container">
+                    <!-- Meal Categories -->
+                    <div class="diet-meals-grid">
+                        {% for meal_name, foods in patient.diet_chart.meals.items() %}
+                        <div class="diet-meal-card">
+                            <div class="diet-meal-header">
+                                <div class="diet-meal-icon">
+                                    {% if meal_name == 'Breakfast' %}🌅{% endif %}
+                                    {% if meal_name == 'Mid-Morning' %}☕{% endif %}
+                                    {% if meal_name == 'Lunch' %}☀️{% endif %}
+                                    {% if meal_name == 'Evening Snack' %}🌆{% endif %}
+                                    {% if meal_name == 'Dinner' %}🌙{% endif %}
+                                </div>
+                                <div class="diet-meal-title">{{ meal_name }}</div>
+                            </div>
+                            <div class="diet-meal-body">
+                                <ul class="diet-food-list">
+                                    {% for food in foods %}
+                                    <li class="diet-food-item">{{ food }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Foods to Avoid -->
+                    <div class="diet-avoid-section">
+                        <h3 class="diet-avoid-title">🚫 Foods to Avoid</h3>
+                        <div class="diet-avoid-grid">
+                            {% for avoid_food in patient.diet_chart.avoid %}
+                            <div class="diet-avoid-item">{{ avoid_food }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Hydration Reminder -->
+                    <div class="diet-hydration-section">
+                        <h3 class="diet-hydration-title">💧 Hydration Guidelines</h3>
+                        <div class="diet-hydration-content">
+                            <div class="diet-hydration-icon">🚰</div>
+                            <p>{{ patient.diet_chart.hydration }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Nutritional Tips -->
+                    <div class="diet-tips-section">
+                        <h3 class="diet-tips-title">💡 Nutritional Tips</h3>
+                        <div class="diet-tips-content">
+                            <div class="diet-tip-item">
+                                <span class="diet-tip-icon">🥚</span>
+                                <span>Include protein-rich foods for tissue repair</span>
+                            </div>
+                            <div class="diet-tip-item">
+                                <span class="diet-tip-icon">🥗</span>
+                                <span>Eat plenty of fruits and vegetables for vitamins</span>
+                            </div>
+                            <div class="diet-tip-item">
+                                <span class="diet-tip-icon">🥛</span>
+                                <span>Calcium-rich foods support bone healing</span>
+                            </div>
+                            <div class="diet-tip-item">
+                                <span class="diet-tip-icon">🫒</span>
+                                <span>Healthy fats reduce inflammation</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="no-data">No diet recommendations available.</div>
+                {% endif %}
+                
+                {% if is_doctor %}
+                <div class="editable-section">
+                    <div class="section-label">✏️ Edit Diet Chart (one food per line)</div>
+                    <textarea class="edit-textarea" id="edit_diet" placeholder="Enter diet recommendations, one per line...">{{ patient.diet | join('\n') if patient.diet else '' }}</textarea>
+                    <button class="btn-save" onclick="saveRecommendations()">💾 Save Changes</button>
+                    <span class="save-status" id="saveStatus3">✓ Saved!</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div id="recovery" class="tab-content">
+                <h2 class="section-title">Recovery Timeline</h2>
+                {% if patient.progress_plan %}
+                    {% for timeline in patient.progress_plan %}
+                    <div class="recovery-timeline-card">
+                        <div class="timeline-header">
+                            <div class="timeline-icon">📅</div>
+                            <div class="timeline-info">
+                                <h3 class="timeline-title">{{ timeline.timeline }}</h3>
+                                <span class="timeline-category">{{ timeline.category }}</span>
+                            </div>
+                        </div>
+
+                        <div class="timeline-phases">
+                            {% for phase in timeline.weeks %}
+                            <div class="timeline-phase">
+                                <div class="phase-header">
+                                    <div class="phase-week">{{ phase.week }}</div>
+                                    <div class="phase-indicator"></div>
+                                </div>
+                                <div class="phase-content">
+                                    <div class="phase-description">{{ phase.desc }}</div>
+                                    <div class="phase-activity">
+                                        <strong>Activities:</strong> {{ phase.activity }}
+                                    </div>
+                                    <div class="phase-warning">
+                                        <strong>⚠️ Important:</strong> {{ phase.warning }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <div class="recovery-disclaimer">
+                        <div class="disclaimer-icon">ℹ️</div>
+                        <div class="disclaimer-text">
+                            <strong>Note:</strong> This timeline is a general guideline. Individual recovery may vary based on age, overall health, and adherence to treatment. Always follow your doctor's specific recommendations.
+                        </div>
+                    </div>
+                {% else %}
+                <div class="no-data">No recovery timeline available.</div>
+                {% endif %}
+
+                {% if is_doctor %}
+                <div class="editable-section">
+                    <div class="section-label">✏️ Edit Recovery Timeline (one text per line)</div>
+                    <textarea class="edit-textarea" id="edit_recovery" placeholder="Enter recovery progress/tips, one per line...">{{ patient.recovery_progress | join('\n') if patient.recovery_progress else '' }}</textarea>
+                    <button class="btn-save" onclick="saveRecommendations()">💾 Save Changes</button>
+                    <span class="save-status" id="saveStatus5">✓ Saved!</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div id="chat" class="tab-content">
+                <h2 class="section-title">Patient-Doctor Chat</h2>
+                
+                {% if patient.doctor_id %}
+                <a href="{{ url_for('chat_page', case_id=case_id, doctor_id=patient.doctor_id) }}" class="open-chat-btn">
+                💬 Open Full Chat window
+                </a>
+                {% else %}
+                    {% if not is_doctor %}
+                    <div class="info-banner">
+                        No doctor assigned yet. 
+                        <a href="{{ url_for('patient_doctors_list', case_id=case_id) }}">Assign a Doctor →</a>
+                    </div>
+                    {% endif %}
+                {% endif %}
+                
+                <div class="chatbox" id="chatbox">
+                    {% if messages %}
+                        {% for msg in messages %}
+                        <div class="message {{ msg.sender_type }}">
+                            <div class="message-sender">
+                            {% if msg.sender_type == 'patient' %}👤 Patient{% else %}👨‍⚕️ Doctor{% endif %}
+                            </div>
+                            <p style="margin:0;">{{ msg.message }}</p>
+                            <div class="message-time">{{ msg.timestamp }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-messages">No messages yet.</div>
+                    {% endif %}
+                </div>
+                
+                {% if patient.doctor_id %}
+                <div class="chat-input-row">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="Type a message..." />
+                    <button class="chat-send-btn" onclick="sendChatMessage()">Send</button>
+                </div>
+                {% endif %}
+            </div>
+
+        </div> </main>
+</div>
+
+<script>
+var caseId = "{{ case_id }}";
+var doctorId = "{{ patient.doctor_id if patient.doctor_id else 0 }}";
+var isDoctor = "{{ 'true' if is_doctor else 'false' }}" === "true";
+
+function showTab(tabName, event) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabName).classList.add('active');
+  if (event) event.currentTarget.classList.add('active');
+  if (tabName === 'chat') scrollChat();
+}
+
+function scrollChat() {
+  var cb = document.getElementById('chatbox');
+  if (cb) cb.scrollTop = cb.scrollHeight;
+}
+
+function saveRecommendations() {
+  var physioEl = document.getElementById('edit_physiotherapy');
+  var dietEl = document.getElementById('edit_diet');
+  var medEl = document.getElementById('edit_medications');
+  var recProgEl = document.getElementById('edit_recovery');
+  var recEl = document.getElementById('rec_doctor_recommendations');
+  var physio = physioEl ? physioEl.value.split('\n').map(s => s.trim()).filter(s => s) : [];
+  var diet = dietEl ? dietEl.value.split('\n').map(s => s.trim()).filter(s => s) : [];
+  var meds = medEl ? medEl.value.split('\n').map(s => s.trim()).filter(s => s) : [];
+  var progress = recProgEl ? recProgEl.value.split('\n').map(s => s.trim()).filter(s => s) : [];
+  var rec = recEl ? recEl.value.trim() : '';
+  fetch('/save_recommendations/' + caseId, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ physiotherapy: physio, diet: diet, medications: meds, recovery_progress: progress, doctor_recommendations: rec })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.status === 'success') {
+      document.querySelectorAll('.save-status').forEach(el => {
+        el.style.display = 'inline';
+        setTimeout(() => el.style.display = 'none', 3000);
+      });
+    } else { alert('Error saving: ' + data.message); }
+  })
+  .catch(() => alert('Error saving recommendations.'));
+}
+
+function sendChatMessage() {
+  var input = document.getElementById('chatInput');
+  if (!input) return;
+  var msg = input.value.trim();
+  if (!msg) return;
+  var senderType = isDoctor ? 'doctor' : 'patient';
+  fetch('/send_message/' + caseId + '/' + doctorId, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: msg, sender_type: senderType })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.status === 'success') {
+      input.value = '';
+      var cb = document.getElementById('chatbox');
+      var noMsg = cb.querySelector('.no-messages');
+      if (noMsg) noMsg.remove();
+      var div = document.createElement('div');
+      div.className = 'message ' + senderType;
+      div.innerHTML = '<div class="message-sender">' + (isDoctor ? '👨‍⚕️ Doctor' : '👤 Patient') + '</div>' +
+        '<p style="margin:0;">' + msg + '</p>' +
+        '<div class="message-time">' + new Date().toLocaleString() + '</div>';
+      cb.appendChild(div);
+      scrollChat();
+    } else { alert('Error: ' + data.message); }
+  });
+}
+
+var chatInputEl = document.getElementById('chatInput');
+if (chatInputEl) {
+  chatInputEl.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') sendChatMessage();
+  });
+}
+
+setInterval(function() {
+  fetch('/api/messages/' + caseId)
+    .then(r => r.json())
+    .then(data => {
+      var cb = document.getElementById('chatbox');
+      var currentCount = cb.querySelectorAll('.message').length;
+      if (data.messages && data.messages.length > currentCount) {
+        cb.innerHTML = '';
+        data.messages.forEach(function(m) {
+          var div = document.createElement('div');
+          div.className = 'message ' + m.sender_type;
+          div.innerHTML = '<div class="message-sender">' + (m.sender_type === 'doctor' ? '👨‍⚕️ Doctor' : '👤 Patient') + '</div>' +
+            '<p style="margin:0;">' + m.message + '</p>' +
+            '<div class="message-time">' + m.timestamp + '</div>';
+          cb.appendChild(div);
+        });
+        scrollChat();
+      }
+    });
+}, 5000);
+
+// TIMERS JAVASCRIPT
+function updateMedTimers() {
+    const timerBoxes = document.querySelectorAll('.timer-target');
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentSecond = now.getSeconds();
+
+    timerBoxes.forEach(box => {
+        const hoursData = box.getAttribute('data-hours');
+        
+        // If it's an "As needed (SOS)" med with no specific hours
+        if (!hoursData) {
+            box.innerHTML = "Take only when required";
+            box.classList.remove('timer-urgent');
+            return;
+        }
+
+        const hours = hoursData.split(',').map(Number).sort((a,b) => a-b);
+        
+        // Find the next hour in the schedule
+        let nextHour = hours.find(h => h > currentHour || (h === currentHour && currentMinute === 0 && currentSecond === 0));
+        let isTomorrow = false;
+
+        // If no hours left today, the next dose is the first hour tomorrow
+        if (nextHour === undefined) {
+            nextHour = hours[0]; 
+            isTomorrow = true;
+        }
+
+        // Create a date object for the target time
+        let targetTime = new Date();
+        if (isTomorrow) {
+            targetTime.setDate(targetTime.getDate() + 1);
+        }
+        targetTime.setHours(nextHour, 0, 0, 0);
+
+        // Calculate differences
+        const diffMs = targetTime - now;
+        const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        const diffSecs = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+        // If it's within 15 minutes of the dose, or overdue today
+        if (diffMs <= 0 || (diffHrs === 0 && diffMins <= 15 && !isTomorrow)) {
+            box.innerHTML = "🚨 TAKE NOW";
+            box.classList.add('timer-urgent');
+        } else {
+            // Pad numbers with leading zeros
+            const hrsStr = String(diffHrs).padStart(2, '0');
+            const minsStr = String(diffMins).padStart(2, '0');
+            const secsStr = String(diffSecs).padStart(2, '0');
+            
+            box.innerHTML = `⏱️ Next dose in: ${hrsStr}h ${minsStr}m ${secsStr}s`;
+            box.classList.remove('timer-urgent');
+        }
+    });
+}
+
+window.onload = function() {
+  scrollChat();
+  updateMedTimers(); // Run once immediately
+};
+
+// Update timers every 1 second
+setInterval(updateMedTimers, 1000);
+
+// MEDICATION COMPLETION FUNCTIONALITY
+function markMedicationDone(medName, buttonElement) {
+    const statusElement = document.getElementById('status-' + medName.replace(/\s+/g, '-').toLowerCase());
+    const medCard = buttonElement.closest('.med-card');
+
+    // Get current date and time
+    const now = new Date();
+    const timestamp = now.toLocaleString();
+    const today = now.toISOString().split('T')[0]; // YYYY-MM-DD format
+
+    // Create storage key for this medication and date
+    const storageKey = `med_${medName.replace(/\s+/g, '_').toLowerCase()}_${today}`;
+
+    // Check if already marked as done today
+    const existingData = localStorage.getItem(storageKey);
+    if (existingData) {
+        const data = JSON.parse(existingData);
+        if (data.completed) {
+            alert(`You already marked "${medName}" as completed today at ${data.timestamp}`);
+            return;
+        }
+    }
+
+    // Mark as completed
+    const completionData = {
+        completed: true,
+        timestamp: timestamp,
+        medication: medName
+    };
+
+    localStorage.setItem(storageKey, JSON.stringify(completionData));
+
+    // Update UI
+    buttonElement.classList.add('done');
+    buttonElement.innerHTML = '✅ Done Today';
+    buttonElement.disabled = true;
+
+    statusElement.innerHTML = `✓ Completed at ${timestamp}`;
+    statusElement.classList.add('completed');
+    statusElement.classList.remove('pending');
+
+    medCard.classList.add('completed');
+
+    // Show success message
+    showCompletionMessage(`"${medName}" marked as completed!`);
+
+    // Restart the timer immediately to show time until next dose
+    updateMedTimers();
+
+    // Reset button at midnight (next day)
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    const timeUntilMidnight = tomorrow - now;
+
+    setTimeout(() => {
+        resetMedicationButton(medName, buttonElement, statusElement, medCard);
+    }, timeUntilMidnight);
+}
+
+function resetMedicationButton(medName, buttonElement, statusElement, medCard) {
+    buttonElement.classList.remove('done');
+    buttonElement.innerHTML = '✅ Mark as Done';
+    buttonElement.disabled = false;
+
+    statusElement.innerHTML = '';
+    statusElement.classList.remove('completed');
+    statusElement.classList.add('pending');
+
+    medCard.classList.remove('completed');
+}
+
+function showCompletionMessage(message) {
+    // Create a temporary success message
+    const messageDiv = document.createElement('div');
+    messageDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--success-color);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 1000;
+        font-weight: 600;
+        animation: slideIn 0.3s ease-out;
+    `;
+    messageDiv.innerHTML = message;
+
+    document.body.appendChild(messageDiv);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        messageDiv.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => {
+            document.body.removeChild(messageDiv);
+        }, 300);
+    }, 3000);
+}
+
+// Load medication completion status on page load
+function loadMedicationStatus() {
+    const today = new Date().toISOString().split('T')[0];
+    const medButtons = document.querySelectorAll('.med-done-btn');
+
+    medButtons.forEach(button => {
+        const medName = button.getAttribute('data-med-name');
+        const storageKey = `med_${medName.replace(/\s+/g, '_').toLowerCase()}_${today}`;
+        const statusElement = document.getElementById('status-' + medName.replace(/\s+/g, '-').toLowerCase());
+        const medCard = button.closest('.med-card');
+
+        const existingData = localStorage.getItem(storageKey);
+        if (existingData) {
+            const data = JSON.parse(existingData);
+            if (data.completed) {
+                button.classList.add('done');
+                button.innerHTML = '✅ Done Today';
+                button.disabled = true;
+
+                statusElement.innerHTML = `✓ Completed at ${data.timestamp}`;
+                statusElement.classList.add('completed');
+                statusElement.classList.remove('pending');
+
+                medCard.classList.add('completed');
+            }
+        }
+    });
+}
+
+// Add CSS animations for the completion message
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
+
+// Load medication status when page loads
+window.addEventListener('load', loadMedicationStatus);
+</script>
+</body>
+</html>
