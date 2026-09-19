@@ -1,12 +1,34 @@
+# Python
 __pycache__/
-*.pyc
-app.log
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Flask
 *.log
 
-tesseract_installer.exe
-*.exe
+# Database
+*.db
+*.sqlite
+*.sqlite3
 
+# Uploaded patient files
+uploads/
+
+# Environment variables
 .env
 
-uploads/*
-!uploads/.gitkeep
+# IDE
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+# Tesseract Windows installers
+*.exe
+tesseract-setup.exe
+tesseract_installer.exe
